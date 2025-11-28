@@ -1,7 +1,8 @@
+#!/usr/bin/env python
 import time
 import can
-from .motor_telemetry import MotorTelemetry
-from util.packers import pack_int32
+from utils.motor.motor_telemetry import MotorTelemetry
+from utils.motor.packers import pack_int32
 
 # CubeMars CAN command numbers (datasheet)
 CMD_SET_DUTY     = 0
@@ -12,9 +13,8 @@ CMD_SET_POS      = 4
 CMD_SET_ZERO     = 5
 CMD_SET_POS_SPD  = 6
 
-# CubeMars packet size for mpde commands example (AA 05 48 00 00 13 88 55 E5 BB)
+# CubeMars packet size for mode commands example (duty: AA 05 46 00 00 4E 20 D6 4C BB)
 CMD_SET_MODE     = 10 
-
 
 class Motor:
     # Constructor
