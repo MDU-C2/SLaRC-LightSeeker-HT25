@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Conversion to CAN data, 4 bytes
 def pack_int32(val):
     val = int(val)
