@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Bitrate 1Mbit
 BITRATE = 1_000_000
 
