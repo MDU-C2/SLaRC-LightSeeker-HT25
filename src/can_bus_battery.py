@@ -2,7 +2,8 @@
 import time
 import subprocess
 import can
-#Change next line
+
+# The battery uses 1 Mbits
 from utils.motor.motors import BITRATE
 
 # CAN Bus communication set up
@@ -11,12 +12,12 @@ def sh(cmd):
     
 # QOL Function that sets up can safely each time the program is ran
 def bring_up_can():
-    sh(["sudo", "ip", "link", "set", "can0", "down"])
-    sh(["sudo", "ip", "link", "set", "can0", "type", "can", "bitrate", str(BITRATE)])
-    sh(["sudo", "ip", "link", "set", "can0", "up"])
+    sh(["sudo", "ip", "link", "set", "can1", "down"])
+    sh(["sudo", "ip", "link", "set", "can1", "type", "can", "bitrate", str(BITRATE)])
+    sh(["sudo", "ip", "link", "set", "can1", "up"])
     time.sleep(0.15)
 
 # Create bus and returns socket for channel/usb can0
 def create_bus():
     bring_up_can()
-    return can.interface.Bus(channel="can0", bustype="socketcan")
+    return can.interface.Bus(channel="can1", bustype="socketcan")
