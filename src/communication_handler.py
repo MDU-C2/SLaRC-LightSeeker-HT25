@@ -1,17 +1,25 @@
 #!/usr/bin/env python
 import time
-import subprocess
 import can
 
-BATTERY_ID = {
+# Battery ID
+BATTERY_IDS = {
     "battery_left":  0x01,
     "battery_right": 0x02
-  
-Class Battery:
+
+FRAME_VOLTAGE = 0x100     # Ersätt med korrekta värden senare
+FRAME_CURRENT = 0x101
+FRAME_TEMPERATURE = 0x102
+FRAME_STATUS = 0x103
+FRAME_CELLS = 0x104
+    
+class Battery:
   def __init__(self, bus, battery):
       self.id = battery_id
       self.bus = bus
       self.name = name
+
+      # Runtime data
       self.voltage = 0.0
       self.current = 0.0
       self.temperature = 0.0
@@ -31,7 +39,7 @@ Class Battery:
 
       self.last_update = time.time()
 
-Class BatteryManager:
+class BatteryManager:
   def __init__(self, bus, battery):
 
             
