@@ -42,6 +42,15 @@ class Battery:
         self.remaning_capacity_mAh = 0.0 # mAh
         self.error_information = 0.0
 
+    def send_status_to_ros(self):
+        print(self.manufacturerID)
+        print(self.sku_code)
+        print(self.cells_voltage)
+        print(self.charge_discharge_current)
+        print(self.temperature)
+        print(self.remaning_capacity_percent)
+        print(self.cycle_life)
+
     def update_from_frame(self, data):
         # All data is little endian
         self.manufacturerID = (data[1] << 8) | data[0]
@@ -67,6 +76,8 @@ class Battery:
         self.standard_capacity = (data[41] << 8) | data[40] # mAh
         self.remaning_capacity_mAh = (data[43] << 8) | data[42] # mAh
         self.error_information = (data[45] << 8) | data[44]
+
+        self.send_status_to_ros()
 
         self.last_update = time.time()
 
@@ -99,7 +110,7 @@ class BatteryManager:
         while True:
             # recv python-can library, it waits for CAN frame to arrive on can1 socket
             msg = self.bus.recv() 
-
+            print("Starting to receive messages")
             # If nothing happens skip
             if msg is None:
                 continue
@@ -128,5 +139,6 @@ class BatteryManager:
                 packet = self.buffers[batt_id]
                 if len(packet) >= 46:
                     self.batteries[batt_id].update_from_frame(packet)
+                    break
 
     
