@@ -8,23 +8,42 @@ from geometry_msgs.msg import TwistStamped
 
 from utils.motor.can_bus import create_bus
 from utils.motor.motor_api import Motor
-from utils.motor.motor_group import MotorGroup, SkidSteerController
+from utils.motor.motor_group import MotorGroup
 from utils.motor.motor_odometry import SkidSteerOdometry
+from utils.motor.motors import LEFT_MOTORS, RIGHT_MOTORS
 
-# Assign Motor ID's
-LEFT_MOTORS = [1]  # Add ID 3 with four motor configuration
-RIGHT_MOTORS = [2] # Add ID 4 with four motor configuration
+from utils.battery.can_bus_battery import create_battery_bus
+from utils.battery.communication_handler import Battery
+
+# Safely bring down CAN Bus
+def bring_down_can(can_id):
+    try:
+        subprocess.call(["sudo", "ip", "link", "set", "can_id", "down"])
+    except Exception as e:
+        print("Warning: bring_down_can failed:", e) # Debug
+
+# Battery controller for ROS
+class BatteryController(Node):
+    def __init__(self):
+        super().__init__("battery_controller")
+        self.create_publisher()
+
+        # Start CAN Bus
+        self.bus = create_battery_bus()
+
+    def __del__(self):
+        # Shutdown Battery CAN bus
+        try:
+            self.bus.shutdown()
+        except:
+            pass
+        
+        bring_down_can("can1")
+        print("Battery CAN interface shut down.")    
 
 # Call motors
 def build_motors(bus, ids):
     return [Motor(bus, mid) for mid in ids]
-
-# Safely bring down CAN Bus
-def bring_down_can():
-    try:
-        subprocess.call(["sudo", "ip", "link", "set", "can0", "down"])
-    except Exception as e:
-        print("Warning: bring_down_can failed:", e) # Debug
 
 # Motor controller for ROS
 class MotorController(Node):
@@ -57,13 +76,10 @@ class MotorController(Node):
             m.set_mode(2)
             time.sleep(0.01)
 
-        # Skid steer control 
-        self.controller = SkidSteerController(self.group, max_rpm=10000, turn_strength=1500)      # adj. parameters
-
         # Odometry initializers with a track_width set arbitrarily to 0.5m
         self.odom = SkidSteerOdometry(track_width_m=0.5)
         self.last_odom_time = time.time()
-        
+
     def __del__(self):
         # Shutdown CAN bus
         try:
@@ -71,8 +87,8 @@ class MotorController(Node):
         except:
             pass
         
-        bring_down_can()
-        print("CAN interface shut down.")
+        bring_down_can("can0")
+        print("Motor CAN interface shut down.")
 
     # Store received twist (v_x and w_z) into shared structure
     def receive_twist(self, msg: TwistStamped):
@@ -87,7 +103,8 @@ class MotorController(Node):
 # Main function
 def main(args=None):
     rclpy.init(args=args)  # initialize ROS client library
-    node= MotorController()
+    node = MotorController()
+    batteryNode = Battery()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
