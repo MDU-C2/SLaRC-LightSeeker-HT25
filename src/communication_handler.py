@@ -45,18 +45,36 @@ class Battery:
     def send_status_to_ros(self):
         print(self.manufacturerID)
         print(self.sku_code)
-        print(self.cells_voltage)
-        print(self.charge_discharge_current)
-        print(self.temperature)
-        print(self.remaning_capacity_percent)
-        print(self.cycle_life)
+        print(self.cells_voltage) # mV
+        print(self.charge_discharge_current) # mA
+        print(self.temperature)  # Celsius
+        print(self.remaning_capacity_percent) # %
+        print(self.cycle_life) # times
+        print(self.health_status) #% According to the battery chemical characteristics curve analysis
+        print(self.cell_1_voltage) # mV
+        print(self.cell_2_voltage) # mV
+        print(self.cell_3_voltage) # mV
+        print(self.cell_4_voltage) # mV
+        print(self.cell_5_voltage) # mV
+        print(self.cell_6_voltage) # mV
+        print(self.cell_7_voltage) # mV
+        print(self.cell_8_voltage) # mV
+        print(self.cell_9_voltage) # mV
+        print(self.cell_10_voltage) # mV
+        print(self.cell_11_voltage) # mV
+        print(self.cell_12_voltage) # mV
+        print(self.standard_capacity) # mAh
+        print(self.remaning_capacity_mAh) # mAh
+        print(self.error_information)
 
     def update_from_frame(self, data):
         # All data is little endian
         self.manufacturerID = (data[1] << 8) | data[0]
         self.sku_code =  (data[3] << 8) | data[2]
         self.cells_voltage = (data[5] << 8) | data[4] # mV
-        self.charge_discharge_current = (data[7] << 8) | data[6] # mA
+        self.charge_discharge_current = (data[7] << 8) | data[6] # mA: Positive = charging, negative = discharging
+        if self.charge_discharge_current & 0x8000:
+            self.charge_discharge_current -= 0x10000
         self.temperature = (data[9] << 8) | data[8]  # Celsius
         self.remaning_capacity_percent = (data[11] << 8) | data[10] # %
         self.cycle_life = (data[13] << 8) | data[12] # times
