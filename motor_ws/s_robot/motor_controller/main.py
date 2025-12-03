@@ -30,7 +30,7 @@ class BatteryController(Node):
         super().__init__("battery_controller")
         #self.batteryPublisher = self.create_publisher(BatteryInfo, "battery_info", 10)
 
-        self.publish_timer = self.create_timer(300, self.Publish_Battery_Info)
+        self.publish_timer = self.create_timer(10, self.Publish_Battery_Info)
 
         # Start CAN Bus
         self.bus = create_battery_bus()
@@ -45,7 +45,7 @@ class BatteryController(Node):
         except:
             pass
         
-        bring_down_can("can1")
+        bring_down_can()
         print("Battery CAN interface shut down.")
 
     def Publish_Battery_Info(self):
@@ -98,7 +98,7 @@ class MotorController(Node):
         except:
             pass
         
-        bring_down_can("can0")
+        bring_down_can()
         print("Motor CAN interface shut down.")
 
     # Store received twist (v_x and w_z) into shared structure
@@ -116,6 +116,7 @@ def main(args=None):
     rclpy.init(args=args)  # initialize ROS client library
     #motorNode = MotorController()
     batteryNode = BatteryController()
+    print("Battery node created")
     #rclpy.spin(motorNode)
     rclpy.spin(batteryNode)
     #motorNode.destroy_node()
