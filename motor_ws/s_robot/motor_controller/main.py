@@ -13,23 +13,30 @@ from utils.motor.motor_odometry import SkidSteerOdometry
 from utils.motor.motors import LEFT_MOTORS, RIGHT_MOTORS
 
 from utils.battery.can_bus_battery import create_battery_bus
-from utils.battery.communication_handler import Battery
+from utils.battery.communication_handler import Battery, BatteryManager
 
 # Safely bring down CAN Bus
-def bring_down_can(can_id):
+def bring_down_can():
     try:
-        subprocess.call(["sudo", "ip", "link", "set", "can_id", "down"])
+        subprocess.call(["sudo", "ip", "link", "set", "can0", "down"])
+        subprocess.call(["sudo", "ip", "link", "set", "can1", "down"])
     except Exception as e:
         print("Warning: bring_down_can failed:", e) # Debug
+
 
 # Battery controller for ROS
 class BatteryController(Node):
     def __init__(self):
         super().__init__("battery_controller")
-        self.create_publisher()
+        #self.batteryPublisher = self.create_publisher(BatteryInfo, "battery_info", 10)
+
+        self.publish_timer = self.create_timer(300, self.Publish_Battery_Info)
 
         # Start CAN Bus
         self.bus = create_battery_bus()
+
+        # Initialize batteries
+        self.batteryManager = BatteryManager(self.bus)
 
     def __del__(self):
         # Shutdown Battery CAN bus
@@ -39,7 +46,11 @@ class BatteryController(Node):
             pass
         
         bring_down_can("can1")
-        print("Battery CAN interface shut down.")    
+        print("Battery CAN interface shut down.")
+
+    def Publish_Battery_Info(self):
+        print("Publish battery info")
+        self.batteryManager.run()
 
 # Call motors
 def build_motors(bus, ids):
@@ -103,10 +114,12 @@ class MotorController(Node):
 # Main function
 def main(args=None):
     rclpy.init(args=args)  # initialize ROS client library
-    node = MotorController()
-    batteryNode = Battery()
-    rclpy.spin(node)
-    node.destroy_node()
+    #motorNode = MotorController()
+    batteryNode = BatteryController()
+    #rclpy.spin(motorNode)
+    rclpy.spin(batteryNode)
+    #motorNode.destroy_node()
+    batteryNode.destroy_node()
     rclpy.shutdown()
 
 if __name__ == "__main__":
