@@ -137,9 +137,13 @@ class BatteryManager:
             # If nothing happens skip
             if msg is None:
                 continue
-            
+
             # Skip all CAN messages that do not come from a LEFT or RIGHT battery
             if msg.arbitration_id  not in self.batteries:
+                continue
+
+            # Skips packet if length is not 8
+            if msg.dlc != 8:
                 continue
 
             # Selects which battery that packet belongs to
