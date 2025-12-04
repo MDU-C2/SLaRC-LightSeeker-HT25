@@ -8,8 +8,8 @@ LEFT_NODE_ID = 0x16    # default CAN node ID = 0x16 according to documentation (
 RIGHT_NODE_ID = 0x17
 
 # Construct the full 29-bit CAN ID:
-LEFT_CAN_ID = (MESSAGE_TYPE << 8) | LEFT_NODE_ID  # = 0x109216 adding them together
-RIGHT_CAN_ID = (MESSAGE_TYPE << 8) | RIGHT_NODE_ID  # = 0x109217
+LEFT_CAN_ID = (MESSAGE_TYPE << 8) | LEFT_NODE_ID  # = 0x01109216 adding them together
+RIGHT_CAN_ID = (MESSAGE_TYPE << 8) | RIGHT_NODE_ID  # = 0x01109217
 
 class Battery:
     def __init__(self, battery_id, name):
@@ -93,7 +93,12 @@ class Battery:
         self.cell_12_voltage = (data[39] << 8) | data[38] # mV
         self.standard_capacity = (data[41] << 8) | data[40] # mAh
         self.remaning_capacity_mAh = (data[43] << 8) | data[42] # mAh
-        self.error_information = (data[45] << 8) | data[44]
+
+        self.temp_err1 = data[44]
+        self.temp_err2 = data[45]
+        self.temp_err3 = data[46]
+        self.temp_err4 = data[47]
+        self.error_information = (self.temp_err4 << 24) | (self.temp_err3 << 16) | (self.temp_err2 << 8) | self.temp_err1
 
         self.send_status_to_ros()
 
@@ -155,7 +160,7 @@ class BatteryManager:
             # End of transfer, full packet received and is 48 bytes long.
             if end == 1:
                 packet = self.buffers[batt_id]
-                if len(packet) >= 46:
+                if len(packet) >= 48:
                     self.batteries[batt_id].update_from_frame(packet)
                     break
 
