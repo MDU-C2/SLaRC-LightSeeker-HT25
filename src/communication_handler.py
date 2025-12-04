@@ -3,13 +3,17 @@ import time
 import can
     
 # Battery uses CAN Extended Frame (29-bit), same as motors
-MESSAGE_TYPE = 0x1092
-LEFT_NODE_ID = 0x16    # default CAN node ID = 0x16 according to documentation (p.23)
-RIGHT_NODE_ID = 0x17
+# MESSAGE_TYPE = 0x1092
+# LEFT_NODE_ID = 0x16    # default CAN node ID = 0x16 according to documentation (p.23)
+# RIGHT_NODE_ID = 0x17
 
 # Construct the full 29-bit CAN ID:
-LEFT_CAN_ID = (MESSAGE_TYPE << 8) | LEFT_NODE_ID  # = 0x01109216 adding them together
-RIGHT_CAN_ID = (MESSAGE_TYPE << 8) | RIGHT_NODE_ID  # = 0x01109217
+# LEFT_CAN_ID_DOC = (MESSAGE_TYPE << 8) | LEFT_NODE_ID  # = 0x01109216 adding them together
+# RIGHT_CAN_ID_DOC = (MESSAGE_TYPE << 8) | RIGHT_NODE_ID  # = 0x01109217
+
+# candump requires these ID:s, which means that the battery documentation from Tattu above is incorrect
+LEFT_CAN_ID = 01109216
+RIGHT_CAN_ID = 01109217
 
 class Battery:
     def __init__(self, battery_id, name):
