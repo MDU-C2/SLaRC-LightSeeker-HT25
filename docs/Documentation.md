@@ -49,7 +49,6 @@ Name of files shuld follow this base: DOC-xxx-Name_Of_File
 <br> Mälardalen University 
 
 <!-- Table for abbreviations?-->
-<!-- ALL STRUKTUR MÅSTE DÖPAS OM -->
 ---
 ## Table of Contents
 1. [Introduction](#1-introduction)
