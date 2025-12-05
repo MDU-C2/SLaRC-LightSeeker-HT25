@@ -145,7 +145,7 @@ Transmitting messages to control the motors
 - DLC:  8 bytes 
 - Endian: Big Endian 
 - Control Mode: Servo, Velocity mode (3) is the implemented control mode. 
-Note: Velocity is set in ERPM and not RPM. ERPM has a range of –100000 -> 100000 while RPM has a range of 0 -> 235. Code example in the “Motor documentation page 35”. 
+Note: Velocity is set in ERPM and not RPM. ERPM has a range of –100000 -> 100000 while RPM has a range of 0 -> 235. Code example in [DS-CubeMars-AK10-9, p.35](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Data_sheets/DS-CubeMars-AK10-9.pdf). 
 
 Receiving messages with information from the motors 
 The motors transmit single frame messages at a frequency set in the CubeMars software (1-500 Hz). The size of each message is 8 bytes. Each transfer will contain: 
@@ -154,7 +154,7 @@ The motors transmit single frame messages at a frequency set in the CubeMars sof
 - Current (2 bytes) 
 - Motor Temperature (1 byte) 
 - Error Code (1 byte) 
-Ranges, units and error codes is available in the “documentation p. 42” as well as an example of message reception. 
+Ranges, units and error codes is available in [DS-CubeMars-AK10-9, p.42](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Data_sheets/DS-CubeMars-AK10-9.pdf) as well as an example of message reception. 
 
 #### 1. Battery
 The CAN communication for the battery uses CAN Bus 2.0B, meaning a 29-bit extended frames format and has a sending frequency of 4 Hz (0.25 s). 
