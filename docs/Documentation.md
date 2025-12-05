@@ -136,6 +136,24 @@ The low-voltage power distribution board is used for components with different D
 ### 4. CAN communication
 
 #### 1. Motors
+Transmitting messages to control the motors 
+CAN Protocol: CAN Bus 2.0B a baud rate @ 1Mbps 
+Identifier CAN ID: Each motor needs a unique ID which can be set using CubeMars - Upper Computer software. Note that using this software requires UART-USB connection. Instructions are available in the “motor documentation”. These IDs should be specified in “motor_ws/s_robot/utils/motor/motors.py”.  
+Identifier: Control Mode ID + Driver ID 
+Frame Type: 29-bit Extended format 
+Frame Format: DATA 
+DLC:  8 bytes 
+Endian: Big Endian 
+Control Mode: Servo, Velocity mode (3) is the implemented control mode. 
+Note: Velocity is set in ERPM and not RPM. ERPM has a range of –100000 -> 100000 while RPM has a range of 0 -> 235. Code example in the “Motor documentation page 35”. 
+Receiving messages with information from the motors 
+The motors transmit single frame messages at a frequency set in the CubeMars software (1-500 Hz). The size of each message is 8 bytes. Each transfer will contain: 
+Position (2 bytes) 
+Speed (2 bytes) 
+Current (2 bytes) 
+Motor Temperature (1 byte) 
+Error Code (1 byte) 
+Ranges, units and error codes is available in the “documentation p. 42” as well as an example of message reception. 
 
 #### 1. Battery
 
