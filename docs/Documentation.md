@@ -38,6 +38,8 @@ Left-aligned: :---
 Centered: :---:
 Right-aligned: ---:
 
+IMPORTANT! 
+Name of files shuld follow this base: DOC-xxx-Name_Of_File
 
 -->
 
@@ -68,7 +70,7 @@ Welcome to the SLaRC UGV user guide. This document will help you to set up, use,
 The platform is a Unmanned Ground Vehicle (UGV) and is a part of the SLaRC project. ...
 
 ### 1. Bill of Materials
-
+All components and spare parts are listed in the file [DOC-001-Bill_Of_Materials](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Files/DOC-001-Bill_Of_Materials.xlsx)
 ### 2. Mechanical Design
 <!-- e.g. solidwork, images of platform/sensors-->
 
@@ -118,8 +120,15 @@ The UGV:S main switch is located at the back of the platform. Its main purpose i
 #### 5. Conductor
 
 #### 6. High Voltage PCB
+The high-voltage power distribution board is used for components that require 48V DC input. The PDB has an input from the battery, four outputs to the motors, and one output to the router.
+
+It is designed to make a maximum current of 30A from the motors and 20A to the router.
+The card also has extra space for CAN communication, including two USB-to-CAN adapters and two CAN bus splitters.
+<!-- Add drawings and pictures of the pdb--->
 
 #### 7. Low Voltage PCB
+The low-voltage power distribution board is used for components with different DC inputs. The PDB accepts a 48V DC input and provides three output voltage levels through three DC-DC converters. The first is for all sensors and components that need a 24V DC input. The middle is made for the NUC computer that needs 20V DC, and the last is flexible between 5-12V for future sensors. 
+<!-- Add drawings and pictures of the pdb--->
 
 #### 8. Motor
 
