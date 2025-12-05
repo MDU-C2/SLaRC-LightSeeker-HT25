@@ -138,7 +138,7 @@ The low-voltage power distribution board is used for components with different D
 #### 1. Motors
 Transmitting messages to control the motors 
 - CAN Protocol: CAN Bus 2.0B a baud rate @ 1Mbps 
-- Identifier CAN ID: Each motor needs a unique ID which can be set using CubeMars - Upper Computer software. Note that using this software requires UART-USB connection. Instructions are available in the “motor documentation”. These IDs should be specified in “motor_ws/s_robot/utils/motor/motors.py”.  
+- Identifier CAN ID: Each motor needs a unique ID which can be set using CubeMars - Upper Computer software. Note that using this software requires UART-USB connection. Instructions are available in [DS-CubeMars-AK10-9]. These IDs should be specified in “motor_ws/s_robot/utils/motor/motors.py”.  
 - Identifier: Control Mode ID + Driver ID 
 - Frame Type: 29-bit Extended format 
 - Frame Format: DATA 
