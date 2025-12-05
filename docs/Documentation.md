@@ -137,22 +137,23 @@ The low-voltage power distribution board is used for components with different D
 
 #### 1. Motors
 Transmitting messages to control the motors 
-CAN Protocol: CAN Bus 2.0B a baud rate @ 1Mbps 
-Identifier CAN ID: Each motor needs a unique ID which can be set using CubeMars - Upper Computer software. Note that using this software requires UART-USB connection. Instructions are available in the “motor documentation”. These IDs should be specified in “motor_ws/s_robot/utils/motor/motors.py”.  
-Identifier: Control Mode ID + Driver ID 
-Frame Type: 29-bit Extended format 
-Frame Format: DATA 
-DLC:  8 bytes 
-Endian: Big Endian 
-Control Mode: Servo, Velocity mode (3) is the implemented control mode. 
+- CAN Protocol: CAN Bus 2.0B a baud rate @ 1Mbps 
+- Identifier CAN ID: Each motor needs a unique ID which can be set using CubeMars - Upper Computer software. Note that using this software requires UART-USB connection. Instructions are available in the “motor documentation”. These IDs should be specified in “motor_ws/s_robot/utils/motor/motors.py”.  
+- Identifier: Control Mode ID + Driver ID 
+- Frame Type: 29-bit Extended format 
+- Frame Format: DATA 
+- DLC:  8 bytes 
+- Endian: Big Endian 
+- Control Mode: Servo, Velocity mode (3) is the implemented control mode. 
 Note: Velocity is set in ERPM and not RPM. ERPM has a range of –100000 -> 100000 while RPM has a range of 0 -> 235. Code example in the “Motor documentation page 35”. 
+
 Receiving messages with information from the motors 
 The motors transmit single frame messages at a frequency set in the CubeMars software (1-500 Hz). The size of each message is 8 bytes. Each transfer will contain: 
-Position (2 bytes) 
-Speed (2 bytes) 
-Current (2 bytes) 
-Motor Temperature (1 byte) 
-Error Code (1 byte) 
+- Position (2 bytes) 
+- Speed (2 bytes) 
+- Current (2 bytes) 
+- Motor Temperature (1 byte) 
+- Error Code (1 byte) 
 Ranges, units and error codes is available in the “documentation p. 42” as well as an example of message reception. 
 
 #### 1. Battery
@@ -168,30 +169,30 @@ where the CAN ID consists of the values of the Message Type ID + BMS Source Node
     - Battery 2: 0x01109217 (Source Node ID = Default + 1) 
 
 Each CAN frame ends with 1 tail byte, and that byte is structured as follows: 
-    - bit 7: Start of transfer 
-    - bit 6: End of transfer 
-    - bit 5: Toggle bit 
-    - bit 0-4: Transfer ID 
+- bit 7: Start of transfer 
+- bit 6: End of transfer 
+- bit 5: Toggle bit 
+- bit 0-4: Transfer ID 
     
 Each data field from the battery is encoded as a 2 byte / 16-bit little-endian value. The low byte comes first, and the high byte comes after (example data[0], ..., data[1]). All data fields use 2 bytes, except for the error of information where every code means the status of an error. All of these are shown in the list below: 
-    - Manufacturer ID (2 bytes) 
-    - SKU code (2 bytes) 
-    - Cells Voltage (2 bytes) 
-    - Charge and discharge current (2 bytes) 
-    - Temperature (2 bytes) 
-    - Remaining Capacity (2 bytes) 
-    - Cycle Life (2 bytes) 
-    - Health Status (2 bytes) 
-    - Cell 1 – 12 (2 bytes each) 
-    - Standard Capacity (2 bytes) 
-    - Remaining Capacity (2 bytes) 
-    - Error Information (4 bytes) 
+- Manufacturer ID (2 bytes) 
+- SKU code (2 bytes) 
+- Cells Voltage (2 bytes) 
+- Charge and discharge current (2 bytes) 
+- Temperature (2 bytes) 
+- Remaining Capacity (2 bytes) 
+- Cycle Life (2 bytes) 
+- Health Status (2 bytes) 
+- Cell 1 – 12 (2 bytes each) 
+- Standard Capacity (2 bytes) 
+- Remaining Capacity (2 bytes) 
+- Error Information (4 bytes) 
     
 Genstattu batteries utilize a multi-frame transfer protocol. The BMS requires 48 bytes of data to complete a status report, and one CAN frame can hold up to 8 bytes. Therefore, one status report is split up to several CAN frames, the structure is shown below: 
-    - Frame 1: bytes 0 – 6 
-    - Frame 2: bytes 7 – 13 
-    - Frame 3: bytes 14 – 20... 
-    - Final frame: bytes ...42 - 48 contains the last bytes and a tail-byte flagging the end byte to 1. 
+- Frame 1: bytes 0 – 6 
+- Frame 2: bytes 7 – 13 
+- Frame 3: bytes 14 – 20... 
+- Final frame: bytes ...42 - 48 contains the last bytes and a tail-byte flagging the end byte to 1. 
 In this battery, this results in 7 full frames. 
 
 ### 5. Sensors
