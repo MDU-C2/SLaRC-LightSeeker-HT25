@@ -195,13 +195,13 @@ Ranges, units and error codes is available in [DS-CubeMars-AK10-9, p.42](https:/
 The CAN communication for the battery uses CAN Bus 2.0B, meaning a 29-bit extended frames format and has a sending frequency of 4 Hz (0.25 s). 
 
 In the case of a message broadcast transfer, the CAN ID field of every frame of the transfer will contain: 
-    - Priority field – 5 bits 
-    - Message Type ID – 16 bits 
-    - Service or message – 1 bit 
-    - Source node ID – 7 bits 
+- Priority field – 5 bits
+- Message Type ID – 16 bits 
+- Service or message – 1 bit 
+- Source node ID – 7 bits 
 where the CAN ID consists of the values of the Message Type ID + BMS Source Node ID which gives: 
-    - Battery 1: 0x01109216 (Default) 
-    - Battery 2: 0x01109217 (Source Node ID = Default + 1) 
+- Battery 1: 0x01109216 (Default) 
+- Battery 2: 0x01109217 (Source Node ID = Default + 1) 
 
 Each CAN frame ends with 1 tail byte, and that byte is structured as follows: 
 - bit 7: Start of transfer 
