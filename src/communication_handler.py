@@ -12,8 +12,8 @@ import can
 # RIGHT_CAN_ID_DOC = (MESSAGE_TYPE << 8) | RIGHT_NODE_ID  # = 0x01109217
 
 # candump requires these ID:s, which means that the battery documentation from Tattu above is incorrect
-LEFT_CAN_ID = 01109216
-RIGHT_CAN_ID = 01109217
+LEFT_CAN_ID = 0x01109216
+RIGHT_CAN_ID = 0x01109217
 
 class Battery:
     def __init__(self, battery_id, name):
@@ -52,9 +52,9 @@ class Battery:
         print(self.cells_voltage) # mV
         print(self.charge_discharge_current) # mA
         print(self.temperature)  # Celsius
-        print(self.remaning_capacity_percent) # %
+        print(self.remaning_capacity_percent) # SOC %
         print(self.cycle_life) # times
-        print(self.health_status) #% According to the battery chemical characteristics curve analysis
+        print(self.health_status) # % SOH (According to the battery chemical characteristics curve analysis)
         print(self.cell_1_voltage) # mV
         print(self.cell_2_voltage) # mV
         print(self.cell_3_voltage) # mV
@@ -72,40 +72,50 @@ class Battery:
         print(self.error_information)
 
     def update_from_frame(self, data):
-        # All data is little endian
-        self.manufacturerID = (data[1] << 8) | data[0]
-        self.sku_code =  (data[3] << 8) | data[2]
-        self.cells_voltage = (data[5] << 8) | data[4] # mV
-        self.charge_discharge_current = (data[7] << 8) | data[6] # mA: Positive = charging, negative = discharging
+        self.manufacturerID = (data[3] << 8) | data[2]
+        self.sku_code =  (data[5] << 8) | data[4]
+        self.cells_voltage = (data[7] << 8) | data[6]  # mV
+
+        self.charge_discharge_current = (data[9] << 8) | data[8]  # mA
         if self.charge_discharge_current & 0x8000:
             self.charge_discharge_current -= 0x10000
-        self.temperature = (data[9] << 8) | data[8]  # Celsius
-        self.remaning_capacity_percent = (data[11] << 8) | data[10] # %
-        self.cycle_life = (data[13] << 8) | data[12] # times
-        self.health_status = (data[15] << 8) | data[14] #% According to the battery chemical characteristics curve analysis
-        self.cell_1_voltage = (data[17] << 8) | data[16] # mV
-        self.cell_2_voltage = (data[19] << 8) | data[18] # mV
-        self.cell_3_voltage = (data[21] << 8) | data[20] # mV
-        self.cell_4_voltage = (data[23] << 8) | data[22] # mV
-        self.cell_5_voltage = (data[25] << 8) | data[24] # mV
-        self.cell_6_voltage = (data[27] << 8) | data[26] # mV
-        self.cell_7_voltage = (data[29] << 8) | data[28] # mV
-        self.cell_8_voltage = (data[31] << 8) | data[30] # mV
-        self.cell_9_voltage = (data[33] << 8) | data[32] # mV
-        self.cell_10_voltage = (data[35] << 8) | data[34] # mV
-        self.cell_11_voltage = (data[37] << 8) | data[36] # mV
-        self.cell_12_voltage = (data[39] << 8) | data[38] # mV
-        self.standard_capacity = (data[41] << 8) | data[40] # mAh
-        self.remaning_capacity_mAh = (data[43] << 8) | data[42] # mAh
 
-        self.temp_err1 = data[44]
-        self.temp_err2 = data[45]
-        self.temp_err3 = data[46]
-        self.temp_err4 = data[47]
-        self.error_information = (self.temp_err4 << 24) | (self.temp_err3 << 16) | (self.temp_err2 << 8) | self.temp_err1
+        # Temperatur (2 bytes, little endian)
+        self.temperature = (data[11] << 8) | data[10]
 
+        self.remaning_capacity_percent = (data[13] << 8) | data[12]
+        self.cycle_life = (data[15] << 8) | data[14]
+        self.health_status = (data[17] << 8) | data[16]
+
+        self.cell_1_voltage  = (data[19] << 8) | data[18]
+        self.cell_2_voltage  = (data[21] << 8) | data[20]
+        self.cell_3_voltage  = (data[23] << 8) | data[22]
+        self.cell_4_voltage  = (data[25] << 8) | data[24]
+        self.cell_5_voltage  = (data[27] << 8) | data[26]
+        self.cell_6_voltage  = (data[29] << 8) | data[28]
+        self.cell_7_voltage  = (data[31] << 8) | data[30]
+        self.cell_8_voltage  = (data[33] << 8) | data[32]
+        self.cell_9_voltage  = (data[35] << 8) | data[34]
+        self.cell_10_voltage = (data[37] << 8) | data[36]
+        self.cell_11_voltage = (data[39] << 8) | data[38]
+        self.cell_12_voltage = (data[41] << 8) | data[40]
+
+        self.standard_capacity      = (data[43] << 8) | data[42]
+        self.remaning_capacity_mAh  = (data[45] << 8) | data[44]
+
+        self.temp_err1 = data[46]
+        self.temp_err2 = data[47]
+        self.temp_err3 = data[48]
+        self.temp_err4 = 0
+
+        self.error_information = (
+            (self.temp_err4 << 24) |
+            (self.temp_err3 << 16) |
+            (self.temp_err2 << 8)  |
+            self.temp_err1
+        )
+        
         self.send_status_to_ros()
-
         self.last_update = time.time()
 
 class BatteryManager:
@@ -136,40 +146,42 @@ class BatteryManager:
     def run(self):
         while True:
             # recv python-can library, it waits for CAN frame to arrive on can1 socket
-            msg = self.bus.recv() 
+            batt_data = self.bus.recv() 
             print("Starting to receive messages")
             # If nothing happens skip
-            if msg is None:
+            if batt_data is None:
+                print("Empty message")
                 continue
 
             # Skip all CAN messages that do not come from a LEFT or RIGHT battery
-            if msg.arbitration_id  not in self.batteries:
+            if batt_data.arbitration_id  not in self.batteries:
                 continue
 
             # Skips packet if length is not 8
-            if msg.dlc != 8:
+            if batt_data.dlc != 8:
+                print("Message not full length")
                 continue
-
+            
             # Selects which battery that packet belongs to
-            batt_id = msg.arbitration_id
+            batt_id = batt_data.arbitration_id
             # List data
-            data = list(msg.data)
+            frame = list(batt_data.data)
+            print(frame)
             # Get the last byte of the CAN frame and decode tail byte
-            tail = data[-1]
+            tail = frame[-1]
             start, end, toggle, transfer_id = self.extract_tail(tail)
 
             # Start of transfer, begin new packet
             if start == 1:
                 self.buffers[batt_id] = []
-
             # Append from 0 to 7 bytes, where tail is 7.
-            self.buffers[batt_id] += data[:7]
-            
+            self.buffers[batt_id] += frame[:7]
             # End of transfer, full packet received and is 48 bytes long.
-            if end == 1:
-                packet = self.buffers[batt_id]
-                if len(packet) >= 48:
-                    self.batteries[batt_id].update_from_frame(packet)
-                    break
-
-    
+            packet = self.buffers[batt_id]
+            if len(packet) >= 49:
+                #if len(packet) >= 46:
+                self.batteries[batt_id].update_from_frame(packet)
+                self.buffers[batt_id] = []   # töm bufferten för nästa paket
+                continue
+            else:
+                print("Incorrect packet length:", len(packet))
