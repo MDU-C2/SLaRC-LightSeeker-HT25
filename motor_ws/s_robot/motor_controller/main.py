@@ -62,7 +62,6 @@ class BatteryController(Node):
 
         # Grab the battery object and update their values
         battery = self.batteryManager.batteries[batt_id]
-        battery.update_from_frame(packet)
 
         # Create ROS-message and publish to topic
         msg = battery.pack_message_to_ros()
