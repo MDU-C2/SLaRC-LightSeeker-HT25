@@ -281,6 +281,6 @@ class BatteryManager:
             if len(packet) >= 48:
                 self.batteries[batt_id].update_from_frame(packet)
                 self.buffers[batt_id] = []
-                continue
+                return packet
             else:
                 print("Incorrect packet length:", len(packet))
