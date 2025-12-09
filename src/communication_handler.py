@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import time
 import can
-    
+
 # Battery uses CAN Extended Frame (29-bit), same as motors
 # MESSAGE_TYPE = 0x1092
 # LEFT_NODE_ID = 0x16    # default CAN node ID = 0x16 according to documentation (p.23)
@@ -27,7 +27,7 @@ class Battery:
         self.cells_voltage = 0.0 # mV
         self.charge_discharge_current = 0.0 # mA
         self.temperature = 0.0  # Celsius
-        self.remaning_capacity_percent = 0.0 # %
+        self.remaining_capacity_percent = 0.0 # %
         self.cycle_life = 0.0 # times
         self.health_status = 0.0 #% According to the battery chemical characteristics curve analysis
         self.cell_1_voltage = 0.0 # mV
@@ -42,17 +42,33 @@ class Battery:
         self.cell_10_voltage = 0.0 # mV
         self.cell_11_voltage = 0.0 # mV
         self.cell_12_voltage = 0.0 # mV
+
+        # Error flags default (0 = no alarm)
+        self.LOW_TEMPERATURE = 0
+        self.OVER_TEMPERATURE = 0
+        self.OVER_CURRENT_WHILE_CHARGING = 0
+        self.OVER_CURRENT_WHILE_DISCHARGING = 0
+        self.TOTAL_VOLTAGE_IS_UNDERVOLTAGE = 0
+        self.TOTAL_VOLTAGE_IS_OVERVOLTAGE = 0
+        self.HUGE_VOLTAGE_IMBALANCE_OF_SINGLE_CELL = 0
+        self.VOLTAGE_OF_SINGLE_CELL_IS_OVERVOLTAGE = 0
+        self.SINGLE_CELL_UNDERVOLTAGE = 0
+        self.SHORT_CIRCUIT_WHILE_CHARGING = 0
+        self.SHORT_CIRCUIT_WHILE_DISCHARGING = 0
+        self.LOW_REMAINING_CAPACITY = 0
+        self.USE_NON_ORIGINAL_CHARGER = 0
+
         self.standard_capacity = 0.0 # mAh
-        self.remaning_capacity_mAh = 0.0 # mAh
+        self.remaining_capacity_mAh = 0.0 # mAh
         self.error_information = 0.0
 
     def send_status_to_ros(self):
-        print(self.manufacturerID)
+        '''print(self.manufacturerID)
         print(self.sku_code)
         print(self.cells_voltage) # mV
         print(self.charge_discharge_current) # mA
         print(self.temperature)  # Celsius
-        print(self.remaning_capacity_percent) # SOC %
+        print(self.remaining_capacity_percent) # SOC %
         print(self.cycle_life) # times
         print(self.health_status) # % SOH (According to the battery chemical characteristics curve analysis)
         print(self.cell_1_voltage) # mV
@@ -68,25 +84,34 @@ class Battery:
         print(self.cell_11_voltage) # mV
         print(self.cell_12_voltage) # mV
         print(self.standard_capacity) # mAh
-        print(self.remaning_capacity_mAh) # mAh
-        print(self.error_information)
-
+        print(self.remaining_capacity_mAh) # mAh
+        print(self.error_information)'''
+        # Skapa BatteryInfo.msg
+        # Send to CMDVEL
+    
+    # Little endian sorted hex to decimal conversion with byte value data shifted 2 steps
     def update_from_frame(self, data):
+        # Identification
         self.manufacturerID = (data[3] << 8) | data[2]
         self.sku_code =  (data[5] << 8) | data[4]
+
+        # Voltage
         self.cells_voltage = (data[7] << 8) | data[6]  # mV
 
+        # Discharge current
         self.charge_discharge_current = (data[9] << 8) | data[8]  # mA
         if self.charge_discharge_current & 0x8000:
             self.charge_discharge_current -= 0x10000
 
-        # Temperatur (2 bytes, little endian)
+        # Temperature
         self.temperature = (data[11] << 8) | data[10]
 
-        self.remaning_capacity_percent = (data[13] << 8) | data[12]
+        # Battery life and health status
+        self.remaining_capacity_percent = (data[13] << 8) | data[12]
         self.cycle_life = (data[15] << 8) | data[14]
         self.health_status = (data[17] << 8) | data[16]
 
+        # Cell data
         self.cell_1_voltage  = (data[19] << 8) | data[18]
         self.cell_2_voltage  = (data[21] << 8) | data[20]
         self.cell_3_voltage  = (data[23] << 8) | data[22]
@@ -100,12 +125,14 @@ class Battery:
         self.cell_11_voltage = (data[39] << 8) | data[38]
         self.cell_12_voltage = (data[41] << 8) | data[40]
 
+        # Capacity
         self.standard_capacity      = (data[43] << 8) | data[42]
-        self.remaning_capacity_mAh  = (data[45] << 8) | data[44]
+        self.remaining_capacity_mAh  = (data[45] << 8) | data[44]
 
+        # Error flags; 3 and 4 are reserved according to data sheet, hence = 0
         self.temp_err1 = data[46]
         self.temp_err2 = data[47]
-        self.temp_err3 = data[48]
+        self.temp_err3 = 0
         self.temp_err4 = 0
 
         self.error_information = (
@@ -114,9 +141,83 @@ class Battery:
             (self.temp_err2 << 8)  |
             self.temp_err1
         )
-        
-        self.send_status_to_ros()
+
+        # print(self.error_information)
+        self.allow_drive()
+        self.decode_error()
+        # self.send_status_to_ros()
         self.last_update = time.time()
+        
+        # Ensure that the motors are safe to drive
+    
+    # Ensure that the battery is working and ok to use
+    def allow_drive(self):
+        safe = True
+        
+        # If battery has not updated for one second flag as not safe
+        if time.time() - self.last_update > 1.0:
+            safe = False
+
+        # If voltage exceeds 52V (52000 mV) flag as not safe
+        if self.cells_voltage > 52000:
+            safe = False
+        
+        # If temperature is less than 5 or higher than 50 flag as not safe
+        if self.temperature < 5 or self.temperature > 50:
+            safe = False
+        
+        # If current is over 100 Amps (100000 mA) flag as not safe            
+        if abs(self.charge_discharge_current) > 100000:
+            safe = False
+        
+        cells = [self.cell_1_voltage, self.cell_2_voltage, self.cell_3_voltage, self.cell_4_voltage, self.cell_5_voltage, self.cell_6_voltage, 
+            self.cell_7_voltage, self.cell_8_voltage, self.cell_9_voltage, self.cell_10_voltage, self.cell_11_voltage, self.cell_12_voltage]
+        
+        # If any of the 12 cells is under 3.15 V or exceeds 3.3 V flag as not safe 
+        for cell_voltage in cells:
+            if cell_voltage < 3150 or cell_voltage > 3300:
+                safe = False
+        
+        # If battery is less than 10 percent do not start
+        if self.remaining_capacity_percent < 10:
+            safe = False       
+        
+        # If health status is less than 20 flag as not safe
+        if self.health_status < 20:
+            safe = False
+
+        self.is_safe_to_drive = safe
+        return self.is_safe_to_drive
+
+    # Decode error code and raise flags     
+    def decode_error(self):
+        self.LOW_TEMPERATURE = (self.error_information) & 0x01
+        self.OVER_TEMPERATURE = (self.error_information >> 1) & 0x01
+        self.OVER_CURRENT_WHILE_CHARGING = (self.error_information >> 2) & 0x01
+        self.OVER_CURRENT_WHILE_DISCHARGING = (self.error_information >> 3) & 0x01
+        self.TOTAL_VOLTAGE_IS_UNDERVOLTAGE = (self.error_information >> 4) & 0x01
+        self.TOTAL_VOLTAGE_IS_OVERVOLTAGE = (self.error_information >> 5) & 0x01
+        self.HUGE_VOLTAGE_IMBALANCE_OF_SINGLE_CELL = (self.error_information >> 6) & 0x01
+        self.VOLTAGE_OF_SINGLE_CELL_IS_OVERVOLTAGE = (self.error_information >> 7) & 0x01
+        self.SINGLE_CELL_UNDERVOLTAGE = (self.error_information >> 8) & 0x01
+        self.SHORT_CIRCUIT_WHILE_CHARGING = (self.error_information >> 9) & 0x01
+        self.SHORT_CIRCUIT_WHILE_DISCHARGING = (self.error_information >> 10) & 0x01
+        self.LOW_REMAINING_CAPACITY = (self.error_information >> 11) & 0x01
+        self.USE_NON_ORIGINAL_CHARGER = (self.error_information >> 12) & 0x01
+
+        '''print(self.LOW_TEMPERATURE)
+        print(self.OVER_TEMPERATURE)
+        print(self.OVER_CURRENT_WHILE_CHARGING)
+        print(self.OVER_CURRENT_WHILE_DISCHARGING)
+        print(self.TOTAL_VOLTAGE_IS_UNDERVOLTAGE)
+        print(self.TOTAL_VOLTAGE_IS_OVERVOLTAGE)
+        print(self.HUGE_VOLTAGE_IMBALANCE_OF_SINGLE_CELL)
+        print(self.VOLTAGE_OF_SINGLE_CELL_IS_OVERVOLTAGE)
+        print(self.SINGLE_CELL_UNDERVOLTAGE)
+        print(self.SHORT_CIRCUIT_WHILE_CHARGING)
+        print(self.SHORT_CIRCUIT_WHILE_DISCHARGING)
+        print(self.LOW_REMAINING_CAPACITY)
+        print(self.USE_NON_ORIGINAL_CHARGER)'''
 
 class BatteryManager:
     def __init__(self, bus):
@@ -174,14 +275,17 @@ class BatteryManager:
             # Start of transfer, begin new packet
             if start == 1:
                 self.buffers[batt_id] = []
+
             # Append from 0 to 7 bytes, where tail is 7.
             self.buffers[batt_id] += frame[:7]
+
             # End of transfer, full packet received and is 48 bytes long.
             packet = self.buffers[batt_id]
-            if len(packet) >= 49:
-                #if len(packet) >= 46:
+
+            # If packet length is equal to or more than 48 update values and send, then empty buffert for next packet
+            if len(packet) >= 48:
                 self.batteries[batt_id].update_from_frame(packet)
-                self.buffers[batt_id] = []   # töm bufferten för nästa paket
-                continue
+                self.buffers[batt_id] = []
+                break
             else:
                 print("Incorrect packet length:", len(packet))
