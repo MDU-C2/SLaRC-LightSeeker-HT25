@@ -10,12 +10,15 @@ from utils.motor.can_bus import create_bus
 from utils.motor.motor_api import Motor
 from utils.motor.motor_group import MotorGroup
 from utils.motor.motor_odometry import SkidSteerOdometry
+from utils.motor.motor_telemetry import MotorTelemetry
 from utils.motor.motors import LEFT_MOTORS, RIGHT_MOTORS
 
 from utils.battery.can_bus_battery import create_battery_bus
 from utils.battery.communication_handler import Battery, BatteryManager
 
-# Safely bring down CAN Bus
+from s_msgs.msg import BatteryInfo
+
+# Safely bring down CAN Bus #ALREADY IMPLEMENTED IN C
 def bring_down_can():
     try:
         subprocess.call(["sudo", "ip", "link", "set", "can0", "down"])
@@ -23,20 +26,45 @@ def bring_down_can():
     except Exception as e:
         print("Warning: bring_down_can failed:", e) # Debug
 
-
 # Battery controller for ROS
 class BatteryController(Node):
     def __init__(self):
         super().__init__("battery_controller")
-        #self.batteryPublisher = self.create_publisher(BatteryInfo, "battery_info", 10)
 
-        self.publish_timer = self.create_timer(10, self.Publish_Battery_Info)
-
+        self.batteryPublisher = self.create_publisher(BatteryInfo, "battery_info", 10)
+        self.publish_timer_batt = self.create_timer(10, self.publish_battery_info)
         # Start CAN Bus
         self.bus = create_battery_bus()
 
         # Initialize batteries
         self.batteryManager = BatteryManager(self.bus)
+        
+    def pack_message_to_ros(self):
+        msg = BatteryInfo()
+        
+        msg.manufacturer_id = self.manufacturerID
+        msg.sku_code = self.sku_code
+        msg.cells_voltage_mv = self.cells_voltage # mV
+        msg.charge_discharge_current_ma = self.charge_discharge_current # mA
+        msg.temperature_c = self.temperature  # Celsius
+        msg.remaining_capacity_percent = self.remaining_capacity_percent # SOC %
+        msg.cycle_life = self.cycle_life # times
+        msg.health_status = self.health_status # % SOH (According to the battery chemical characteristics curve analysis)
+        msg.cell_1_voltage_mv = self.cell_1_voltage # mV
+        msg.cell_2_voltage_mv = self.cell_2_voltage # mV
+        msg.cell_3_voltage_mv = self.cell_3_voltage # mV
+        msg.cell_4_voltage_mv = self.cell_4_voltage # mV
+        msg.cell_5_voltage_mv = self.cell_5_voltage # mV
+        msg.cell_6_voltage_mv = self.cell_6_voltage # mV
+        msg.cell_7_voltage_mv = self.cell_7_voltage # mV
+        msg.cell_8_voltage_mv = self.cell_8_voltage # mV
+        msg.cell_9_voltage_mv = self.cell_9_voltage # mV
+        msg.cell_10_voltage_mv = self.cell_10_voltage # mV
+        msg.cell_11_voltage_mv = self.cell_11_voltage # mV
+        msg.cell_12_voltage_mv = self.cell_12_voltage # mV
+        msg.standard_capacity_mah = self.standard_capacity # mAh
+        msg.remaining_capacity_mah = self.remaining_capacity # mAh
+        msg.error_code = self.error_information # Decimal format, convert to binary to read alarms
 
     def __del__(self):
         # Shutdown Battery CAN bus
@@ -48,7 +76,7 @@ class BatteryController(Node):
         bring_down_can()
         print("Battery CAN interface shut down.")
 
-    def Publish_Battery_Info(self):
+    def publish_battery_info(self):
         print("Publish battery info")
         self.batteryManager.run()
 
@@ -61,6 +89,9 @@ class MotorController(Node):
     def __init__(self):
         super().__init__("motor_controller")
         self.create_subscription(TwistStamped, "/cmd_vel", self.receive_twist, 10)
+
+        #self.motorPublisher = self.create_publisher(MotorInfo, "motor_info", 10)
+        self.publish_timer_motor = self.create_timer(10, self.ROS_telemetry)
 
         # Start CAN Bus
         self.bus = create_bus()
@@ -103,13 +134,15 @@ class MotorController(Node):
 
     # Store received twist (v_x and w_z) into shared structure
     def receive_twist(self, msg: TwistStamped):
-
         v_x = float(msg.twist.linear.x)
         w_z = float(msg.twist.angular.z)
 
         #print(v_x, w_z)
         # Apply skid-steer output using Twist
         self.group.apply_twist(v_x, w_z)
+
+    def ROS_telemetry(self: MotorTelemetry):
+        self.update_from_frame()
 
 # Main function
 def main(args=None):
