@@ -43,56 +43,56 @@ class Battery:
         self.cell_10_voltage = 0.0 # mV
         self.cell_11_voltage = 0.0 # mV
         self.cell_12_voltage = 0.0 # mV
-
-        # Error flags default (0 = no alarm)
-        self.LOW_TEMPERATURE = 0
-        self.OVER_TEMPERATURE = 0
-        self.OVER_CURRENT_WHILE_CHARGING = 0
-        self.OVER_CURRENT_WHILE_DISCHARGING = 0
-        self.TOTAL_VOLTAGE_IS_UNDERVOLTAGE = 0
-        self.TOTAL_VOLTAGE_IS_OVERVOLTAGE = 0
-        self.HUGE_VOLTAGE_IMBALANCE_OF_SINGLE_CELL = 0
-        self.VOLTAGE_OF_SINGLE_CELL_IS_OVERVOLTAGE = 0
-        self.SINGLE_CELL_UNDERVOLTAGE = 0
-        self.SHORT_CIRCUIT_WHILE_CHARGING = 0
-        self.SHORT_CIRCUIT_WHILE_DISCHARGING = 0
-        self.LOW_REMAINING_CAPACITY = 0
-        self.USE_NON_ORIGINAL_CHARGER = 0
-
-        error_flags = [self.LOW_TEMPERATURE, self.OVER_TEMPERATURE, self.OVER_CURRENT_WHILE_CHARGING,
-        self.OVER_CURRENT_WHILE_DISCHARGING, self.TOTAL_VOLTAGE_IS_UNDERVOLTAGE, self.TOTAL_VOLTAGE_IS_OVERVOLTAGE,
-        self.HUGE_VOLTAGE_IMBALANCE_OF_SINGLE_CELL, self.VOLTAGE_OF_SINGLE_CELL_IS_OVERVOLTAGE, self.SINGLE_CELL_UNDERVOLTAGE,
-        self.SHORT_CIRCUIT_WHILE_CHARGING, self.SHORT_CIRCUIT_WHILE_DISCHARGING, self.LOW_REMAINING_CAPACITY,
-        self.USE_NON_ORIGINAL_CHARGER]
-
         self.standard_capacity = 0.0 # mAh
         self.remaining_capacity_mAh = 0.0 # mAh
         self.error_information = 0.0
-        #int64 manufacturer_id
-        #int64 sku_code
-        #int64 cells_voltage_mv
-        #int64 charge_discharge_current_ma
-        #int64 temperature_c
-        #int64 remaining_capacity_percent
-        #int64 cycle_life
-        #int64 health_ststus
-        #int64 cell_1_voltage_mv
-        #int64 cell_2_voltage_mv
-        #int64 cell_3_voltage_mv
-        #int64 cell_4_voltage_mv
-        #int64 cell_5_voltage_mv
-        #int64 cell_6_voltage_mv
-        #int64 cell_7_voltage_mv
-        #int64 cell_8_voltage_mv
-        #int64 cell_9_voltage_mv
-        #int64 cell_10_voltage_mv
-        #int64 cell_11_voltage_mv
-        #int64 cell_12_voltage_mv
-        #int64 standard_capacity_mah
-        #int64 remaining_capacity_mah
-        #int64 error_code
-        #string error_message
 
+        # Error/alarm flags according to datasheet
+        self.error_flags = [
+            "LOW_TEMPERATURE", "OVER_TEMPERATURE", "OVER_CURRENT_WHILE_CHARGING",
+            "OVER_CURRENT_WHILE_DISCHARGING", "TOTAL_VOLTAGE_IS_UNDERVOLTAGE", "TOTAL_VOLTAGE_IS_OVERVOLTAGE",
+            "HUGE_VOLTAGE_IMBALANCE_OF_SINGLE_CELL", "VOLTAGE_OF_SINGLE_CELL_IS_OVERVOLTAGE", "SINGLE_CELL_UNDERVOLTAGE",
+            "SHORT_CIRCUIT_WHILE_CHARGING", "SHORT_CIRCUIT_WHILE_DISCHARGING", "LOW_REMAINING_CAPACITY",
+            "USE_NON_ORIGINAL_CHARGER"]
+
+        # Create instance attributes for all error flags and set them to 0
+        for name in self.error_flags:
+            setattr(self, name, 0)
+
+        # Last succesful data packet and safety flag
+        self.last_update = 0.0
+        self.is_safe_to_drive = False
+        
+    # Packet to ROS BatteryInfo with a message instance
+    def pack_message_to_ros(self):
+        msg = BatteryInfo()
+        
+        msg.manufacturer_id = self.manufacturerID
+        msg.sku_code = self.sku_code
+        msg.cells_voltage_mv = self.cells_voltage # mV
+        msg.charge_discharge_current_ma = self.charge_discharge_current # mA
+        msg.temperature_c = self.temperature  # Celsius
+        msg.remaining_capacity_percent = self.remaining_capacity_percent # SOC %
+        msg.cycle_life = self.cycle_life # times
+        msg.health_status = self.health_status # % SOH (According to the battery chemical characteristics curve analysis)
+        msg.cell_1_voltage_mv = self.cell_1_voltage # mV
+        msg.cell_2_voltage_mv = self.cell_2_voltage # mV
+        msg.cell_3_voltage_mv = self.cell_3_voltage # mV
+        msg.cell_4_voltage_mv = self.cell_4_voltage # mV
+        msg.cell_5_voltage_mv = self.cell_5_voltage # mV
+        msg.cell_6_voltage_mv = self.cell_6_voltage # mV
+        msg.cell_7_voltage_mv = self.cell_7_voltage # mV
+        msg.cell_8_voltage_mv = self.cell_8_voltage # mV
+        msg.cell_9_voltage_mv = self.cell_9_voltage # mV
+        msg.cell_10_voltage_mv = self.cell_10_voltage # mV
+        msg.cell_11_voltage_mv = self.cell_11_voltage # mV
+        msg.cell_12_voltage_mv = self.cell_12_voltage # mV
+        msg.standard_capacity_mah = self.standard_capacity # mAh
+        msg.remaining_capacity_mah = self.remaining_capacity_mAh # mAh
+        msg.error_code = self.error_information # Decimal format, convert to binary to read alarms
+
+        return msg
+        
     # Little endian sorted hex to decimal conversion with byte value data shifted 2 steps
     def update_from_frame(self, data):
         # Identification
@@ -145,12 +145,10 @@ class Battery:
             (self.temp_err2 << 8)  |
             self.temp_err1
         )
-
-        # print(self.error_information)
-        self.allow_drive()
-        self.decode_error()
-        # self.send_status_to_ros()
+        
         self.last_update = time.time()
+        self.decode_error()
+        self.allow_drive()
         
     # Ensure that the motors are safe to drive
     # Ensure that the battery is working and ok to use
@@ -189,35 +187,21 @@ class Battery:
         if self.health_status < 20:
             safe = False
 
-        # Check for active alarm flags
-        for m in self.error_flags:
-            if m == 1:
+        # Check for active alarm flags      
+        for name in self.error_flags:
+            if getattr(self, name):
                 safe = False
+                break
 
+        # All checks passed, safe to drive
         self.is_safe_to_drive = safe
-        return self.is_safe_to_drive
+        return safe
 
-    # Decode error code and raise flags     
+    # Loop through each error flag and extract the bit, one step at a time, and update that bit into the correct attribute
     def decode_error(self):
-        i = 0
-        for m in self.error_flags:
-            self.m = (self.error_information >> i) & 0x01
-            print(m)
-            i = i + 1
-
-        '''print(self.LOW_TEMPERATURE)
-        print(self.OVER_TEMPERATURE)
-        print(self.OVER_CURRENT_WHILE_CHARGING)
-        print(self.OVER_CURRENT_WHILE_DISCHARGING)
-        print(self.TOTAL_VOLTAGE_IS_UNDERVOLTAGE)
-        print(self.TOTAL_VOLTAGE_IS_OVERVOLTAGE)
-        print(self.HUGE_VOLTAGE_IMBALANCE_OF_SINGLE_CELL)
-        print(self.VOLTAGE_OF_SINGLE_CELL_IS_OVERVOLTAGE)
-        print(self.SINGLE_CELL_UNDERVOLTAGE)
-        print(self.SHORT_CIRCUIT_WHILE_CHARGING)
-        print(self.SHORT_CIRCUIT_WHILE_DISCHARGING)
-        print(self.LOW_REMAINING_CAPACITY)
-        print(self.USE_NON_ORIGINAL_CHARGER)'''
+        for i, name in enumerate(self.error_flags):
+            value = (self.error_information >> i) & 0x01
+            setattr(self, name, int(value))
 
 class BatteryManager:
     def __init__(self, bus):
@@ -247,12 +231,12 @@ class BatteryManager:
     def receive_packet(self):
         while True:
             # recv python-can library, it waits for CAN frame to arrive on can1 socket
-            batt_data = self.bus.recv()
+            batt_data = self.bus.recv(timeout=0.1)
             print("Starting to receive messages")
             # If nothing happens skip
             if batt_data is None:
                 print("Empty message")
-                continue
+                return None
 
             # Skip all CAN messages that do not come from a LEFT or RIGHT battery
             if batt_data.arbitration_id  not in self.batteries:
