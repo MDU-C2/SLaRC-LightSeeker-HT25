@@ -38,33 +38,6 @@ class BatteryController(Node):
 
         # Initialize batteries
         self.batteryManager = BatteryManager(self.bus)
-        
-    def pack_message_to_ros(self):
-        msg = BatteryInfo()
-        
-        msg.manufacturer_id = self.manufacturerID
-        msg.sku_code = self.sku_code
-        msg.cells_voltage_mv = self.cells_voltage # mV
-        msg.charge_discharge_current_ma = self.charge_discharge_current # mA
-        msg.temperature_c = self.temperature  # Celsius
-        msg.remaining_capacity_percent = self.remaining_capacity_percent # SOC %
-        msg.cycle_life = self.cycle_life # times
-        msg.health_status = self.health_status # % SOH (According to the battery chemical characteristics curve analysis)
-        msg.cell_1_voltage_mv = self.cell_1_voltage # mV
-        msg.cell_2_voltage_mv = self.cell_2_voltage # mV
-        msg.cell_3_voltage_mv = self.cell_3_voltage # mV
-        msg.cell_4_voltage_mv = self.cell_4_voltage # mV
-        msg.cell_5_voltage_mv = self.cell_5_voltage # mV
-        msg.cell_6_voltage_mv = self.cell_6_voltage # mV
-        msg.cell_7_voltage_mv = self.cell_7_voltage # mV
-        msg.cell_8_voltage_mv = self.cell_8_voltage # mV
-        msg.cell_9_voltage_mv = self.cell_9_voltage # mV
-        msg.cell_10_voltage_mv = self.cell_10_voltage # mV
-        msg.cell_11_voltage_mv = self.cell_11_voltage # mV
-        msg.cell_12_voltage_mv = self.cell_12_voltage # mV
-        msg.standard_capacity_mah = self.standard_capacity # mAh
-        msg.remaining_capacity_mah = self.remaining_capacity # mAh
-        msg.error_code = self.error_information # Decimal format, convert to binary to read alarms
 
     def __del__(self):
         # Shutdown Battery CAN bus
@@ -77,8 +50,23 @@ class BatteryController(Node):
         print("Battery CAN interface shut down.")
 
     def publish_battery_info(self):
-        print("Publish battery info")
-        self.batteryManager.run()
+        # Create BatteryInfo ROS-message
+        result_data = self.batteryManager.receive_packet()
+
+        # No packet/data
+        if packet is None:
+            return
+
+        # result_data = (CAN-ID, packet_bytes)
+        batt_id, packet = result_data
+
+        # Grab the battery object and update their values
+        battery = self.batteryManager.batteries[batt_id]
+        battery.update_from_frame(packet)
+
+        # Create ROS-message and publish to topic
+        msg = battery.pack_message_to_ros()
+        self.batteryPublisher.publish(msg)
 
 # Call motors
 def build_motors(bus, ids):
