@@ -54,7 +54,7 @@ class BatteryController(Node):
         result_data = self.batteryManager.receive_packet()
 
         # No packet/data
-        if packet is None:
+        if result_data is None:
             return
 
         # result_data = (CAN-ID, packet_bytes)
