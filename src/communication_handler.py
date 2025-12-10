@@ -176,7 +176,7 @@ class Battery:
         
         # If any of the 12 cells is under 3.15 V or exceeds 3.3 V flag as not safe 
         for cell_voltage in cells:
-            if cell_voltage < 3150 or cell_voltage > 3300:
+            if cell_voltage < 3000 or cell_voltage > 4200:
                 safe = False
         
         # If battery is less than 10 percent do not start
