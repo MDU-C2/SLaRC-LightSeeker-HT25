@@ -100,11 +100,15 @@ class Motor:
         except Exception as e:
             print(f"[Motor {self.id}] Warning: failed to send RPM {rpm}: {e}")
 
-
+    # Convert motor RPM to linear wheel velocity (m/s)
+    def rpm_to_speed(self, wheel_radius=0.175):
+        rpm = self.rpm
+        if rpm is None:
+            return 0.0
+        return (rpm / 60.0) * (2 * math.pi * wheel_radius)
     # Stop motor by setting RPM to 0
     def stop(self):
         self.set_rpm(0, force=True)
-
 
     # Telemetry handler
     def handle_rx(self, msg):
