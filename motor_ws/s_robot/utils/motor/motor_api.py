@@ -38,23 +38,14 @@ class Motor:
     def _eid(self, command):
         return (command << 8) | self.id
 
-
     # Motor Mode
     def set_mode(self, mode):
-        """
-        mode:
-            0 = STOP / FREEWHEEL
-            1 = TORQUE mode
-            2 = VELOCITY mode
-            3 = POSITION mode
-        """
         msg = can.Message(
             arbitration_id=self._eid(CMD_SET_MODE),
             is_extended_id=True,
             data=pack_int32(int(mode))
         )
         self.bus.send(msg)
-
 
     # Current/Torque Control
     def set_current(self, amps):
@@ -102,7 +93,7 @@ class Motor:
 
     # Convert motor RPM to linear wheel velocity (m/s)
     def rpm_to_speed(self, wheel_radius=0.175):
-        rpm = self.rpm
+        rpm = self.telemetry.rpm
         if rpm is None:
             return 0.0
         return (rpm / 60.0) * (2 * math.pi * wheel_radius)
