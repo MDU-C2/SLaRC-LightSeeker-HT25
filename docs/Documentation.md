@@ -58,20 +58,21 @@ Name of files shuld follow this base: DOC-xxx-Name_Of_File
 1. [Platform Features]()
     1. [Battery Charging](#31-battery-charging)
     1. [Main Switch](#32-main-switch)
-    1. [Open the circuit](#321-open-the-circuit)
+    1. [Emergency Stop](#33-emergency-stop)
+    1. [Add or Remove Components to the PDB](#34-addremove-components-to-the-pdb)
 1. [Hardware Setup]()
-    1. [power-system](#41-power-system)
-    1. [battery](#411-battery)
-    1. [main-switch](#412-main-switch)
-    1. [emergency-stop-button](#413-emergency-stop-button)
-    1. [shunt-regulator](#414-shunt-regulator)
-    1. [conductor](#415-conductor)
-    1. [high-voltage-pcb](#416-high-voltage-pcb)
-    1. [low-voltage-pcb](#417-low-voltage-pcb)
-    1. [motor](#418-motor)
-    1. [can-communication](#42-can-communication)
-    1. [motors](#421-motors)
-    1. [battery](#422-battery)
+    1. [Power System](#43-power-system)
+        1. [Battery](#431-battery)
+        1. [Main Switch](#432-main-switch)
+        1. [Emergency Stop Button](#433-emergency-stop-button)
+        1. [Shunt Regulator](#434-shunt-regulator)
+        1. [Conductor](#435-conductor)
+        1. [High-Voltage PDB](#436-high-voltage-pcb)
+        1. [Low-Voltage PDB](#437-low-voltage-pcb)
+        1. [Motors](#438-motors)
+    1. [CAN Communication](#44-can-communication)
+        1. [Motors](#441-motors)
+        1. [Battery](#442-battery)
 1. [Software Installation](#5-software-installation)
 1. [Troubleshooting](#6-troubleshooting)
 1. [Support & Contact](#7-support--contact)
@@ -97,13 +98,28 @@ All components and spare parts are listed in the file [DOC-001-Bill_Of_Materials
 ### 3.2 Main Switch
 The platfrom is equipted with a main switch with the purpose of disconnect/open the circuit from the battery to the rest of the circuit. 
 
-#### 3.2.1 Open the circuit:
-Turn the knob clockwise to the green ON position
+Open the circuit:
+Turn the knob clockwise to the green ON position.
 
+Close the Circuit:
+Turn the knob counter - clockwise to the red OFF position.
 
 ### 3.3 Emergency Stop
+The UGV is equipped with a red emergency stop bottom. It is located at the back of the platform together with the main switch. This is to be pressed in any case of emergency. 
 
-### 3.4 Add/remove sensors to the PDB
+Enable emergency stop: When pressing down the bottom, the power to the motors are cut of. All other components are still supplied with power from the batteries.
+
+Reset emergency stop: Twist the button clockwise to close the circuit and thereby enable power to the motors. WARNING: Be cautious, as the motors may start up at the same speed they previously stopped at. 
+
+
+### 3.4 Add or Remove Components to the PDB
+
+The units connected to the PDB:s can be exchanged as long as the voltage and current limits are not exceeded. Find out if the new unit is suitable before connecting it. Here follows information on the limits for each PDB.
+
+LowVoltage: It is equipped with three different dc-dc converters. One providing power to six units connected to 24V, and maximum 10A together. The next provides two units with 20V and a maximum of 10A. The last one provides power for three units and the voltage can be manually configured by turning the potentiometer higher/lower. It has a limit of delivering no more than 10A. The fuses can be exchanged to match the new units. 
+
+HighVoltage: The motors have one individual connector for each motor. Apart from that it has an additional connector that can provide a unit with 48V and a maximum of 20A. 
+
 
 ### 3.5 Change Output Voltage on PDB
 
@@ -149,23 +165,31 @@ In Case of Fire:
 The UGV:S main switch is located at the back of the platform. Its main purpose is to disconnect/open the ciurcut from the battery to the rest of the circuit. The two states is ON (green field), and OFF (red field).
 
 #### 4.3.3 Emergency Stop Button
+The Emergency Stop Button controlls the conductor. It is normaly closed and thereby brakes the circuit only when the button is pressed. When the button is relised the circuit closes again. 
 
 #### 4.3.4 Shunt Regulator
 
 #### 4.3.5 Conductor
+The conductor works as a relay and controls the power provided to the motors. The emergency stop button is connected to the conductor's control signal. 
+The state of the coil is normally open. 
 
-#### 4.3.6 High Voltage PCB
+If the control signal is OFF (emergency stop is pressed), the coil is open, and the current can't flow through the conductor to the motors. 
+
+If the control signal is ON (emergency stop not pressed), the conductor is closed and current flows. 
+
+
+#### 4.3.6 High-Voltage PCB
 The high-voltage power distribution board is used for components that require 48V DC input. The PDB has an input from the battery, four outputs to the motors, and one output to the router.
 
 It is designed to make a maximum current of 30A from the motors and 20A to the router.
 The card also has extra space for CAN communication, including two USB-to-CAN adapters and two CAN bus splitters.
 <!-- Add drawings and pictures of the pdb--->
 
-#### 4.3.7 Low Voltage PCB
+#### 4.3.7 Low-Voltage PCB
 The low-voltage power distribution board is used for components with different DC inputs. The PDB accepts a 48V DC input and provides three output voltage levels through three DC-DC converters. The first is for all sensors and components that need a 24V DC input. The middle is made for the NUC computer that needs 20V DC, and the last is flexible between 5-12V for future sensors. 
 <!-- Add drawings and pictures of the pdb--->
 
-#### 4.3.8 Motor
+#### 4.3.8 Motors
 
 
 ### 4.4 CAN communication
