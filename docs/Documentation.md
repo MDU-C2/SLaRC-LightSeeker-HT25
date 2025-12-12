@@ -55,6 +55,10 @@ Name of files shuld follow this base: DOC-xxx-Name_Of_File
 1. [System Overview](#2-system-overview)
     1. [Bill of Materials](#21-bill-of-materials)
     1. [Mechanical Design](#22-mechanical-design)
+        1. [Wheels](#221-wheels)
+        1. [Suspension](#22-mechanical-design)
+        1. [Chassis](#223-chassis)
+        1. [Sensor Placement](#224-sensor-placement)
 1. [Platform Features]()
     1. [Battery Charging](#31-battery-charging)
     1. [Main Switch](#32-main-switch)
@@ -74,26 +78,42 @@ Name of files shuld follow this base: DOC-xxx-Name_Of_File
         1. [Motors](#441-motors)
         1. [Battery](#442-battery)
 1. [Software Installation](#5-software-installation)
-1. [Troubleshooting](#6-troubleshooting)
-1. [Support & Contact](#7-support--contact)
+1. [Platform Start-Up & Operation](#6-platform-start-up-and-operation)
+1. [Troubleshooting](#7-troubleshooting)
+1. [Support & Contact](#8-support--contact)
 ---
 
 ## 1. Introduction 
-Welcome to the SLaRC UGV user guide. This document will help you to set up, use, and troubleshoot the UGV platform.
+Welcome to the SLaRC UGV user guide. This document will help you to set up, use, and troubleshoot the UGV platform. It also provides detailed information on all components included in the UGV, describing how they are interconnected as well as their intended functions and applications. A comprehensive Bill of Materials (BOM) is included, accompanied by datasheets for each component within the platform. Should any information be missing, contact details are provided at the end of the document.
 
 **Who is this for?**
-<br> This guide is intended for new users, technicians and administrators.
+<br> This guide is intended for new users, technicians and administrators. For safety reasons, always read through this document before using the platform for the first time. 
 
 ## 2. System Overview
-The platform is a Unmanned Ground Vehicle (UGV) and is a part of the SLaRC project. ...
+The platform is a Unmanned Ground Vehicle (UGV) and is a part of the SLaRC project at Mälardalen University. 
 
 ### 2.1 Bill of Materials
 All components and spare parts are listed in the file [DOC-001-Bill_Of_Materials](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Files/DOC-001-Bill_Of_Materials.xlsx)
+
 ### 2.2 Mechanical Design
 <!-- e.g. solidwork, images of platform/sensors-->
+The overall mechanical design of the UGV is divided into four main sections. The following paragraphs provide detailed information on each section, outlining its functionality and purpose.
+
+#### 2.2.1 Wheels
+
+#### 2.2.2 Suspension 
+
+#### 2.2.3 Chassis
+
+#### 2.2.4 Sensor Placement
+
 ## 3 Platform Features
 <!-- e.g. reqirements or functions that the device can perform -->
 ### 3.1 Battery Charging
+The batteries in this UGV should **ONLY** be charged using the intended charger. Detaild information about the charger can be found in the BOM.
+
+The charger has its own user manual provided by the manufacturer and is linked here.  
+For safety reasons, read this document thoroughly before charging the batteries!
 
 ### 3.2 Main Switch
 The platfrom is equipted with a main switch with the purpose of disconnect/open the circuit from the battery to the rest of the circuit. 
@@ -109,7 +129,7 @@ The UGV is equipped with a red emergency stop bottom. It is located at the back 
 
 Enable emergency stop: When pressing down the bottom, the power to the motors are cut of. All other components are still supplied with power from the batteries.
 
-Reset emergency stop: Twist the button clockwise to close the circuit and thereby enable power to the motors. WARNING: Be cautious, as the motors may start up at the same speed they previously stopped at. 
+Reset emergency stop: Twist the button clockwise to close the circuit and thereby enable power to the motors. **WARNING:** Be cautious, as the motors may start up at the same speed they previously stopped at. 
 
 
 ### 3.4 Add or Remove Components to the PDB
@@ -137,12 +157,12 @@ Discharge Rate: 25C,
 Weight: 6058g,
 Size: 237*173*116mm
 
-WARNING: Lithium-Polymer (LiPo) batteries can be dangerous if mishandled. Failure to follow these safety instructions may result in fire, explosion, personal injury, or damage to equipment.
+**WARNING:** Lithium-Polymer (LiPo) batteries can be dangerous if mishandled. Failure to follow these safety instructions may result in fire, explosion, personal injury, or damage to equipment.
 
 General Safety: 
 
 - Always read and follow safety intructions before use. 
-- 
+- If you are uncertain about how maintenance should be performed, ensure you obtain the necessary information before proceeding
 
 Charging:
 - Always use the intened charger for the specific battery.
@@ -165,13 +185,13 @@ In Case of Fire:
 The UGV:S main switch is located at the back of the platform. Its main purpose is to disconnect/open the ciurcut from the battery to the rest of the circuit. The two states is ON (green field), and OFF (red field).
 
 #### 4.3.3 Emergency Stop Button
-The Emergency Stop Button controlls the conductor. It is normaly closed and thereby brakes the circuit only when the button is pressed. When the button is relised the circuit closes again. 
+The emergency stop button controlls the conductor. It is normaly closed and thereby brakes the circuit only when the button is pressed. When the button is relised the circuit closes again.
 
 #### 4.3.4 Shunt Regulator
 
 #### 4.3.5 Conductor
 The conductor works as a relay and controls the power provided to the motors. The emergency stop button is connected to the conductor's control signal. 
-The state of the coil is normally open. 
+The state of the coil is normally open. This means that if the control signal circuit is interrupted by any reason, the motors will automatically stop
 
 If the control signal is OFF (emergency stop is pressed), the coil is open, and the current can't flow through the conductor to the motors. 
 
@@ -179,10 +199,10 @@ If the control signal is ON (emergency stop not pressed), the conductor is close
 
 
 #### 4.3.6 High-Voltage PDB
-The high-voltage power distribution board is used for components that require 48V DC input. The PDB has an input from the battery, four outputs to the motors, and one output to the router.
+The high-voltage power distribution board is used for components that require 48V DC input. The PDB has an input from the battery, four outputs to the motors, and one output to the router. Every motor connector can handle 48V and up to 30A. The router connector is designed to tolerate 48V and up to 20A. 
+The board also has a dedicated space for CAN communication, including two USB-to-CAN adapters and two CAN bus splitters.
 
-It is designed to make a maximum current of 30A from the motors and 20A to the router.
-The card also has extra space for CAN communication, including two USB-to-CAN adapters and two CAN bus splitters.
+diode, säkring, kylfläns
 <!-- Add drawings and pictures of the pdb--->
 
 #### 4.3.7 Low-Voltage PDB
@@ -195,7 +215,7 @@ The motors have two different types of cables connected. One is power and is con
 
 In the event of a motor failure, replacement is straightforward and can be carried out quickly. The project currently operates with six motors in total, of which two are kept as reserves.
 
-WARNING: The motors are not IP tested and must therefore be used with caution in wet or dirty terrain.
+**WARNING:** The motors are not IP tested and must therefore be used with caution in wet or dirty terrain.
 
 Some basic specifications include: 
 - Weight: 960g
@@ -205,7 +225,7 @@ Some basic specifications include:
 - Rated speed: 235 rpm
 - Rated current: 10.7 ADC, Peak current: 31.9 ADC
 
-More information can be found in the BOM or on the CubeMars website. 
+More information can be found in the BOM or on CubeMars website. 
 
 
 
@@ -284,8 +304,26 @@ In this battery, this results in 7 full frames.
 ## 5. Software Installation
 <!-- e.g. step by step how to install or do something -->
 
-## 6. Troubleshooting
+## 6. Platform Start-Up and Operation
+
+Here follows a step-by-step checklist on how to start and operate the UGV.
+
+1. Read through the entire user guide
+1. Install the battery/batteries.
+1. Set main switch to ON.
+1. 
+
+
+## 7. Troubleshooting
 <!-- e.g. Issue. UGV Fails to respond to commands. -->
 
-## 7. Support & Contact
+**System is running but no power to the motors?**
+
+Make sure the emergency stop botton is not pressed. If not pressed, check if any cable leading to the botton is broke or lose. 
+
+**Component/unit not getting any power?**
+
+Check the corresponding fuse.
+
+## 8. Support & Contact
 <!-- e.g. a list of all students in the SLaRC team and what role they had/what knowledge they possessed about-->
