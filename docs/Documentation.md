@@ -136,7 +136,7 @@ Reset emergency stop: Twist the button clockwise to close the circuit and thereb
 
 The units connected to the PDB:s can be exchanged as long as the voltage and current limits are not exceeded. Find out if the new unit is suitable before connecting it. Here follows information on the limits for each PDB.
 
-LowVoltage: It is equipped with three different dc-dc converters. One providing power to six units connected to 24V, and maximum 10A together. The next provides two units with 20V and a maximum of 10A. The last one provides power for three units and the voltage can be manually configured by turning the potentiometer higher/lower. It has a limit of delivering no more than 10A. The fuses can be exchanged to match the new units. 
+LowVoltage: It is equipped with three different dc-dc converters. One providing power to six units connected to 24V, and maximum 10A together. The next provides two units with 20V and a maximum of 10A. The last one provides power for three units and the voltage can be manually configured by turning the potentiometer higher/lower. It also has a limit of delivering no more than 10A. The fuses can be exchanged to match the new units. 
 
 HighVoltage: The motors have one individual connector for each motor. Each connector tolerates 40V and 30A. Apart from motor connectors, it has an additional connector that can provide a unit with 48V and a maximum of 20A. 
 
@@ -202,11 +202,15 @@ If the control signal is ON (emergency stop not pressed), the conductor is close
 The high-voltage power distribution board is used for components that require 48V DC input. The PDB has an input from the battery, four outputs to the motors, and one output to the router. Every motor connector can handle 48V and up to 30A. The router connector is designed to tolerate 48V and up to 20A. 
 The board also has a dedicated space for CAN communication, including two USB-to-CAN adapters and two CAN bus splitters.
 
-diode, säkring, kylfläns
+The board is equipped with components to ensure a safe and stable power supply for all connected devices. Diodes are used to guarantee that current flows in the correct direction and to protect against reversed polarity when connecting the battery. The diodes are mounted on a heat sink for effective cooling. In addition, each connector is fitted with a fuse, allowing faults to be interrupted and thereby enhancing system safety
 <!-- Add drawings and pictures of the pdb--->
 
 #### 4.3.7 Low-Voltage PDB
-The low-voltage power distribution board is used for components with different DC inputs. The PDB accepts a 48V DC input and provides three output voltage levels through three DC-DC converters. The first is for all sensors and components that need a 24V DC input. The middle is made for the NUC computer that needs 20V DC, and the last is flexible between 5-12V for future sensors. 
+The low-voltage power distribution board is used for components with different DC inputs. The PDB accepts a 48V DC input and provides three different output voltage levels through three DC-DC converters. 
+
+For the intended use, the first dc-dc converter is for all sensors and components that requires a 24V DC input. The middle is made for the NUC computer that needs 20V DC, and the last is free to regulate between 5-12V for future needs. In total, a single DC‑DC converter can deliver up to 10A. The main idea is to keep the board as modular och flexible as possible to easily be able to change the setup in the future. 
+
+As for the high-voltage PDB, this is also equiped with diodes and fuses for safe operation.
 <!-- Add drawings and pictures of the pdb--->
 
 #### 4.3.8 Motors
@@ -217,7 +221,7 @@ In the event of a motor failure, replacement is straightforward and can be carri
 
 **WARNING:** The motors are not IP tested and must therefore be used with caution in wet or dirty terrain.
 
-Some basic specifications include: 
+Some basic motor specifications include: 
 - Weight: 960g
 - Communication: CAN
 - Rated voltage: 48V
@@ -310,7 +314,7 @@ Here follows a step-by-step checklist on how to start and operate the UGV.
 
 1. Read through the entire user guide
 1. Install the battery/batteries.
-1. Set main switch to ON.
+1. Set main switch to ON mode.
 1. 
 
 
