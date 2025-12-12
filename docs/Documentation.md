@@ -59,7 +59,7 @@ Name of files shuld follow this base: DOC-xxx-Name_Of_File
     1. [Battery Charging](#31-battery-charging)
     1. [Main Switch](#32-main-switch)
     1. [Emergency Stop](#33-emergency-stop)
-    1. [Add or Remove Components to the PDB](#34-addremove-components-to-the-pdb)
+    1. [Add or Remove Components to the PDB](#34-add-or-remove-components-to-the-pdb)
 1. [Hardware Setup]()
     1. [Power System](#43-power-system)
         1. [Battery](#431-battery)
@@ -67,8 +67,8 @@ Name of files shuld follow this base: DOC-xxx-Name_Of_File
         1. [Emergency Stop Button](#433-emergency-stop-button)
         1. [Shunt Regulator](#434-shunt-regulator)
         1. [Conductor](#435-conductor)
-        1. [High-Voltage PDB](#436-high-voltage-pcb)
-        1. [Low-Voltage PDB](#437-low-voltage-pcb)
+        1. [High-Voltage PDB](#436-high-voltage-pdb)
+        1. [Low-Voltage PDB](#437-low-voltage-pdb)
         1. [Motors](#438-motors)
     1. [CAN Communication](#44-can-communication)
         1. [Motors](#441-motors)
@@ -118,7 +118,7 @@ The units connected to the PDB:s can be exchanged as long as the voltage and cur
 
 LowVoltage: It is equipped with three different dc-dc converters. One providing power to six units connected to 24V, and maximum 10A together. The next provides two units with 20V and a maximum of 10A. The last one provides power for three units and the voltage can be manually configured by turning the potentiometer higher/lower. It has a limit of delivering no more than 10A. The fuses can be exchanged to match the new units. 
 
-HighVoltage: The motors have one individual connector for each motor. Apart from that it has an additional connector that can provide a unit with 48V and a maximum of 20A. 
+HighVoltage: The motors have one individual connector for each motor. Each connector tolerates 40V and 30A. Apart from motor connectors, it has an additional connector that can provide a unit with 48V and a maximum of 20A. 
 
 
 ### 3.5 Change Output Voltage on PDB
@@ -178,18 +178,35 @@ If the control signal is OFF (emergency stop is pressed), the coil is open, and 
 If the control signal is ON (emergency stop not pressed), the conductor is closed and current flows. 
 
 
-#### 4.3.6 High-Voltage PCB
+#### 4.3.6 High-Voltage PDB
 The high-voltage power distribution board is used for components that require 48V DC input. The PDB has an input from the battery, four outputs to the motors, and one output to the router.
 
 It is designed to make a maximum current of 30A from the motors and 20A to the router.
 The card also has extra space for CAN communication, including two USB-to-CAN adapters and two CAN bus splitters.
 <!-- Add drawings and pictures of the pdb--->
 
-#### 4.3.7 Low-Voltage PCB
+#### 4.3.7 Low-Voltage PDB
 The low-voltage power distribution board is used for components with different DC inputs. The PDB accepts a 48V DC input and provides three output voltage levels through three DC-DC converters. The first is for all sensors and components that need a 24V DC input. The middle is made for the NUC computer that needs 20V DC, and the last is flexible between 5-12V for future sensors. 
 <!-- Add drawings and pictures of the pdb--->
 
 #### 4.3.8 Motors
+The UGV is powered by four brushless DC motors from the manufacturer Cube Mars, with one integrated into each rim. The motor driver board is seamlessly installed within the motor. 
+The motors have two different types of cables connected. One is power and is connected to the High‑Voltage PDB, ensuring a reliable and stable power supply. The second is the CAN cable, linked to the CAN splitter that is also integrated into the High‑Voltage PDB, enabling efficient communication and control.
+
+In the event of a motor failure, replacement is straightforward and can be carried out quickly. The project currently operates with six motors in total, of which two are kept as reserves.
+
+WARNING: The motors are not IP tested and must therefore be used with caution in wet or dirty terrain.
+
+Some basic specifications include: 
+- Weight: 960g
+- Communication: CAN
+- Rated voltage: 48V
+- Rated torque: 18Nm, Peak torque: 53 Nm
+- Rated speed: 235 rpm
+- Rated current: 10.7 ADC, Peak current: 31.9 ADC
+
+More information can be found in the BOM or on the CubeMars website. 
+
 
 
 ### 4.4 CAN communication
