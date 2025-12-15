@@ -310,8 +310,9 @@ It is divided in two categories: motor and battery. In the motor-subfolder we ha
 - motors: Sets parameters such as motor IDs and bitrate at 1 Mbit/s
 The battery section:
 - can_bus_battery: Starts a can bus communication channel on socket can1 for the two batteries.
-- communication_handler: Handles battery packets, decoding, and safety measures. Sends packet accordingly:
-CAN frame -> Buffer -> Full packet -> update_from_frame() -> Battery-objekt
+- communication_handler: Handles battery packets, decoding, and safety measures.
+Sends packet accordingly:
+CAN frame -> Buffer -> Full packet -> update_from_frame() -> Battery-object
 
 The CAN communication, as well as the implemented functionality, was done in C++ and the source code can be found under the motor and battery branches respectively.
 The motors and battery requires each CAN interface (USB-CAN / ODrive adapter) to support two separate CAN busses.
