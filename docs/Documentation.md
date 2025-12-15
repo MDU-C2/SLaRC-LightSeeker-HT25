@@ -293,7 +293,8 @@ Genstattu batteries utilize a multi-frame transfer protocol. The BMS requires 48
 - Frame 2: bytes 7 – 13 
 - Frame 3: bytes 14 – 20... 
 - Final frame: bytes ...42 - 48 contains the last bytes and a tail-byte flagging the end byte to 1. 
-In this battery, this results in 7 full frames. 
+In this battery, this results in 7 full frames.
+Further information is available in [TAA22K12SP25A-Tattu-Plus-1.0-22Ah-12S-Specification-Sheet](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Data_sheets/TAA22K12SP25A-Tattu-Plus-1.0-22Ah-12S-Specification-Sheet.pdf).
 
 ### 4.5 Sensors
 
@@ -307,6 +308,8 @@ In this battery, this results in 7 full frames.
 ### 4.8 RTK
 ## 5. Software Installation
 <!-- e.g. step by step how to install or do something -->
+The CAN communication, as well as the implemented functionality, was done in C++ and can be found under the motor and battery branches respectively.
+
 
 ## 6. Platform Start-Up and Operation
 
