@@ -24,10 +24,13 @@ class Motor {
     Motor(std::string bus, std::string motor_id);
     ~Motor();
 
+    void set_left(int rpm); //Replace with additional argument in set_rpm?
+    void set_right(int rpm); //Replace with additional argument in set_rpm?
     void set_mode(int mode);
     void set_rpm(int rpm);
     void stop();
     bool handle_rx();
+    int pack_int32(int32_t value);// Moved from packers class in py version
 
     private:
     
@@ -69,10 +72,4 @@ class MotorOdometry {
 
     int update(float v_left, float v_right, float dt);
 
-};
-
-class packers {
-
-    public:
-    int pack_int32(int32_t value);
 };
