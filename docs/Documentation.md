@@ -344,7 +344,7 @@ Prerequisites:
 
 The ROS2 Installation was set up following [THIS](https://docs.ros.org/en/jazzy/Installation/Alternatives/Ubuntu-Development-Setup.html) guide.
 ### C++ Libraries
-The following libraries is used for this application:
+The following libraries are used in this application:
 - can
 
 ## 6. Platform Start-Up and Operation
