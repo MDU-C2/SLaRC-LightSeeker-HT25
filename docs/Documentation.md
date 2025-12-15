@@ -306,8 +306,8 @@ It is divided in two categories: motor and battery. In the motor-subfolder we ha
 - motor_api: low-level handling, velocity control, send commands, and RPM conversion.
 - motor_group: Groups the motors on left and right side for skid-steer implementation with ID's corresponding to 1 & 3 for the left side and 2 & 4 for the right side.
 - motor_telemetry: Showcases motor health values and interesting parameters such as voltage, amps, and RPM/eRPM
-- motor_odometry: Calculates the UGVs position and sends data to sensors.
-- motors: Sets parameters such as motor ID's and bitrate at 1 Mbit/s
+- motor_odometry: Calculates the UGV's position and sends data to sensors.
+- motors: Sets parameters such as motor IDs and bitrate at 1 Mbit/s
 The battery section:
 - can_bus_battery: Starts a can bus communication channel on socket can1 for the two batteries.
 - communication_handler: Handles battery packets, decoding, and safety measures. Sends packet accordingly:
