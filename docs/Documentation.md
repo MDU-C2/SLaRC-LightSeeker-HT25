@@ -247,7 +247,8 @@ Transmitting messages to control the motors
 - Control Mode: Servo, Velocity mode (3) is the implemented control mode. 
 Note: Velocity is set in ERPM and not RPM. ERPM has a range of –100000 -> 100000 while RPM has a range of 0 -> 235. Code example in [DS-CubeMars-AK10-9, p.35](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Data_sheets/DS-CubeMars-AK10-9.pdf). 
 
-Receiving messages with information from the motors 
+Receiving messages with information from the motors
+
 The motors transmit single frame messages at a frequency set in the CubeMars software (1-500 Hz). The size of each message is 8 bytes. Each transfer will contain: 
 - Position (2 bytes) 
 - Speed (2 bytes) 
