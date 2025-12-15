@@ -296,6 +296,29 @@ Genstattu batteries utilize a multi-frame transfer protocol. The BMS requires 48
 In this battery, this results in 7 full frames.
 Further information is available in [TAA22K12SP25A-Tattu-Plus-1.0-22Ah-12S-Specification-Sheet](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Data_sheets/TAA22K12SP25A-Tattu-Plus-1.0-22Ah-12S-Specification-Sheet.pdf).
 
+### 4.4.3 Software Architecture
+The software architecture structure is shown in the illustration below.
+<img width="355" height="345" alt="systemarchitecture" src="https://github.com/user-attachments/assets/a33c9468-ea76-47c3-9f39-3d2b243eb5f6" />
+It is divided in two categories: motor and battery. In the motor-subfolder we have:
+- can_bus_motor: Starts a can bus communication channel on socket can0 for the four motors.
+- motor_api: low-level handling, velocity control, send commands, and RPM conversion.
+- motor_group: Groups the motors on left and right side for skid-steer implementation with ID's corresponding to 1 & 3 for the left side and 2 & 4 for the right side.
+- motor_telemetry: Showcases motor health values and interesting parameters such as voltage, amps, RPM/eRPM and
+- motor_odometry: Calculates the UGVs position and sends data to sensors.
+- motors: Sets parameters such as motor ID's and bitrate at 1 Mbit/s
+The battery section:
+- can_bus_battery: Starts a can bus communication channel on socket can1 for the two batteries.
+- communication_handler: Handles battery packets, decoding, and safety measures. Sends packet accordingly:
+CAN frame -> Buffer -> Full packet -> update_from_frame() -> Battery-objekt
+
+The CAN communication, as well as the implemented functionality, was done in C++ and the source code can be found under the motor and battery branches respectively.
+The motors and battery requires each CAN interface (USB-CAN / ODrive adapter) to support two separate CAN busses.
+
+To run the program, following commands needs to be ran:
+source install/setup.bash -> Makes ROS nodes and messages available in the shell
+colcon build -> Compiles all ROS2 packages
+ros2 run s_robot motor_controller -> Runs the program
+
 ### 4.5 Sensors
 
 
@@ -308,8 +331,15 @@ Further information is available in [TAA22K12SP25A-Tattu-Plus-1.0-22Ah-12S-Speci
 ### 4.8 RTK
 ## 5. Software Installation
 <!-- e.g. step by step how to install or do something -->
-The CAN communication, as well as the implemented functionality, was done in C++ and can be found under the motor and battery branches respectively.
+### 5.1 ROS Installation
+Prerequisites:
+- Ubuntu 24.04
+- ROS2 Jazzy
 
+The ROS2 Installation was set up following [THIS](https://docs.ros.org/en/jazzy/Installation/Alternatives/Ubuntu-Development-Setup.html) guide.
+### C++ Libraries
+The following libraries is used for this application:
+- can
 
 ## 6. Platform Start-Up and Operation
 
