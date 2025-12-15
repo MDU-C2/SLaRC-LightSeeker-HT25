@@ -299,7 +299,8 @@ Further information is available in [TAA22K12SP25A-Tattu-Plus-1.0-22Ah-12S-Speci
 ### 4.4.3 Software Architecture
 The software architecture structure is shown in the illustration below.
 
-<img width="255" height="245" alt="systemarchitecture" src="https://github.com/user-attachments/assets/a33c9468-ea76-47c3-9f39-3d2b243eb5f6" />
+<img width="185" height="175" alt="systemarchitecture" src="https://github.com/user-attachments/assets/a33c9468-ea76-47c3-9f39-3d2b243eb5f6" />
+
 It is divided in two categories: motor and battery. In the motor-subfolder we have:
 - can_bus_motor: Starts a can bus communication channel on socket can0 for the four motors.
 - motor_api: low-level handling, velocity control, send commands, and RPM conversion.
