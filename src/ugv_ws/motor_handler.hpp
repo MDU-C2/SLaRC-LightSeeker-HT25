@@ -18,11 +18,11 @@ const int CMD_SET_POS_SPD = 6;
 
 const int CMD_SET_MODE = 10;
 
-class Motors {
+class Motor {
     
     public:
-    Motors(std::string bus, std::string motor_id);
-    ~Motors();
+    Motor(std::string bus, std::string motor_id);
+    ~Motor();
 
     void set_mode(int mode);
     void set_rpm(int rpm);
@@ -61,11 +61,11 @@ class SkidSteerController {
 
 };
 
-class SkidSteerOdometry {
+class MotorOdometry {
 
     public:
-    SkidSteerOdometry(int track_width_m);
-    ~SkidSteerOdometry();
+    MotorOdometry(int track_width_m);
+    ~MotorOdometry();
 
     int update(float v_left, float v_right, float dt);
 
