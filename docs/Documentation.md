@@ -254,7 +254,7 @@ The motors transmit single frame messages at a frequency set in the CubeMars sof
 - Current (2 bytes) 
 - Motor Temperature (1 byte) 
 - Error Code (1 byte) 
-Ranges, units and error codes is available in [DS-CubeMars-AK10-9, p.42](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Data_sheets/DS-CubeMars-AK10-9.pdf) as well as an example of message reception. 
+Ranges, units and error codes is available in [DS-CubeMars-AK10-9, p.42](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Data_sheets/DS-CubeMars-AK10-9.pdf) as well as an example of message reception.
 
 #### 4.4.2 Battery
 The CAN communication for the battery uses CAN Bus 2.0B, meaning a 29-bit extended frames format and has a sending frequency of 4 Hz (0.25 s). 
@@ -313,6 +313,9 @@ CAN frame -> Buffer -> Full packet -> update_from_frame() -> Battery-objekt
 
 The CAN communication, as well as the implemented functionality, was done in C++ and the source code can be found under the motor and battery branches respectively.
 The motors and battery requires each CAN interface (USB-CAN / ODrive adapter) to support two separate CAN busses.
+
+(KANSKE SKA BORT?)
+Cube Mars provided motor cables and CAN cables intertwined in one singular short cable. To lengthen them similar cables was soldered on both the motor cables and CAN cables respectively. Custom-made CAN cables was assembled by combining a [JST-GH Head](https://se.rs-online.com/web/p/wire-housings-plugs/7521731), a [JST-GH Crimp](https://se.rs-online.com/web/p/crimp-contacts/7521725), and 28 AWG cables.
 
 To run the program, following commands needs to be ran:
 source install/setup.bash -> Makes ROS nodes and messages available in the shell
