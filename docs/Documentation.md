@@ -338,7 +338,9 @@ ros2 run s_robot motor_controller -> Runs the program
 ### 4.8 RTK
 ## 5. Software Installation
 <!-- e.g. step by step how to install or do something -->
-### 5.1 ROS Installation
+### 5.1 CubeMars Upper Computer V3.0
+BEWARE: Buttons are not visible
+### 5.2 ROS Installation
 Prerequisites:
 - Ubuntu 24.04
 - ROS2 Jazzy
