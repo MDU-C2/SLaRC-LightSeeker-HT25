@@ -20,6 +20,8 @@ class Battery {
     private:
     int decode_error(); //Sets error flags with info from CAN bus
 
+    std::string m_message_buffer;
+
 };
 
 // BatteryManager
