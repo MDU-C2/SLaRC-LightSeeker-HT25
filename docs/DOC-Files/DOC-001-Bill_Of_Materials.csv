@@ -1,0 +1,33 @@
+﻿Item;Discription;Name in kicad;Manufacturer;Manufacturer Item;Distributor;Distributor Item;Qty;Weight;Notes;Web;Datasheet Web;Name of data sheet in doc
+Low voltage;;;;;;;;;;;;
+1;Capacitor 100uF;C_xV_1;Würth Elektronik;865060757007;-;-;3;;;https://www.we-online.com/en/components/products/WCAP-ASLL#865060757007;https://www.we-online.com/components/products/datasheet/865060757007.pdf;DS-Würth-865060757007
+2;Capacitor 100nF;C_xV_2;Würth Elektronik;885012208087;-;-;3;;;https://www.we-online.com/en/components/products/WCAP-CSGP-50VDC#885012208087;https://www.we-online.com/components/products/datasheet/885012208087.pdf;DS-Würth-885012208087
+3;Capacitor 22uF;C_xV_3;Würth Elektronik;865080643008;-;-;3;;;https://www.we-online.com/en/components/products/WCAP-ASLI#865080643008;https://www.we-online.com/components/products/datasheet/865080643008.pdf;DS-Würth-865080643008
+4;Trim potentiometer 1kohm;Trim_xV;Bourns;3314J-1-102E;RS Components;6917399;2;;;https://se.rs-online.com/web/p/trimmer-potentiometers/6917399;https://docs.rs-online.com/a1d9/0900766b800302ec.pdf;DS-Bourns-3314J-1-102E
+5;Trim potentiometer 5kohm;Trim_5-12V;Bourns;3314J-1-502E;RS Components;691-7412;1;;;https://se.rs-online.com/web/p/trimmer-potentiometers/6917412?searchId=3c8e2927-2957-4829-b867-3d7f09c768ba;https://docs.rs-online.com/a1d9/0900766b800302ec.pdf;DS-Bourns-3314J-1-502E
+6;Schottky diode 20A 100V;DiodTox;Taiwan Semiconductor;"
+MBR20100CT";RS Components;6882003;3;;;https://se.rs-online.com/web/p/schottky-diodes-rectifiers/6882003?searchId=1ff38bc0-f474-4789-863a-252451568179;https://docs.rs-online.com/1ddc/0900766b81404e8d.pdf;DS-Taiwan_Semiconductor-MBR20100CT
+7;Fuse holder;FuseTox;Littelfuse;178.6164.0002;RS Components;8949600;11;;;https://se.rs-online.com/web/p/fuse-holders/8949600?searchId=5be47dd4-2e93-4fa8-8580-fa2e4c6e8e53;https://docs.rs-online.com/573d/0900766b8158bcd9.pdf;DS-Littelfuse-178.6164.0002
+8;Fuse;-;Littelfuse;;;;;;;;;
+9;Fuse;-;Littelfuse;;;;;;;;;
+10;Fuse;-;Littelfuse;;;;;;;;;
+11;DC-DC Converter;DC-DCxV1;TDK-Lambda;"
+I6A4W010A033V-001-R";RS Components;181-3288;3;;;https://se.rs-online.com/web/p/dc-dc-converters/1813288;https://product.tdk.com/system/files/dam/doc/product/power/switching-power/dc-dc-converter/catalog/i6a4w_e.pdf;DS-TDK-Lambda-I6A4W010A033V-001-R
+12;Power connector ;48V1;Amass;XT90H-M;Electro:kit;41020964;1;;;https://www.electrokit.com/stromkontakt-2-pol-xt90-40a-hane;https://www.electrokit.com/upload/product/41020/41020964/XT90H.pdf;DS-Amass-XT90H
+13;Power connector;-;Amass;XT30H-M;Electro:kit;41023790;11;;;https://www.electrokit.com/stromkontakt-2-pol-xt30-15a-hane;https://www.electrokit.com/upload/quick/9f/8b/e633_41023790-tds.pdf;DS-Amass-XT30H-M
+;;;;;;;;;;;;
+High voltage;;;;;;;;;;;;
+1;Power connector ;Bx;Amass;XT90H-M;Electro:kit;41020964;2;;;https://www.electrokit.com/stromkontakt-2-pol-xt90-40a-hane;https://www.electrokit.com/upload/product/41020/41020964/XT90H.pdf;DS-Amass-XT90H
+2;Power connector;Motors 48VDC 30A;Amass;XT60H-M;Electro:kit;41023547;4;;;https://www.electrokit.com/stromkontakt-2-pol-xt60-30a-hane;https://www.electrokit.com/upload/quick/c1/89/6354_41023547-tds.pdf;DS-Amass-XT60H
+3;Power connector;48VDC/48DC 20A;Amass;XT30H-M;Electro:kit;41023790;2;;;https://www.electrokit.com/stromkontakt-2-pol-xt30-15a-hane;https://www.electrokit.com/upload/quick/9f/8b/e633_41023790-tds.pdf;DS-Amass-XT30H-M
+4;Schottky diode 30A 100V;DiodToMx;;;Electro:kit;41018322;4;;;https://www.electrokit.com/vs-63cpq100-n3-to-247-100v-30a-dual?srsltid=AfmBOorVj0XX8gFOdQVJVxuxjL4UbAjRE3omBWjy8kLoQK6cZ2MXkBll-cg;https://www.electrokit.com/upload/product/41018/41018322/VS-63CPQ100PbF,N3.pdf;DS-Vishay-VS-63CPQ100-N3
+5;Fuse holder;FuseToMx;Littelfuse;178.6164.0002;RS Components;8949600;5;;;https://se.rs-online.com/web/p/fuse-holders/8949600?searchId=5be47dd4-2e93-4fa8-8580-fa2e4c6e8e53;https://docs.rs-online.com/573d/0900766b8158bcd9.pdf;DS-Littelfuse-178.6164.0002
+6;Fuse;-;;;;;;;;;;
+7;Fuse;-;;;;;;;;;;
+8;USB-CAN;Peak PCAN-USB;;;odriverrobotics;USB-CAN-01;2;;;https://eu.odriverobotics.com/shop/usb-can-adapter;https://docs.odriverobotics.com/v/latest/hardware/usb-can-datasheet.html;
+9;CANBUS Splitter;;;;RobotShop;;3;;;;;
+10;CANBUS Splitter;CANBUS Splitter;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
