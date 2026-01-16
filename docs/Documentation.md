@@ -93,7 +93,7 @@ Welcome to the SLaRC UGV user guide. This document will help you to set up, use,
 The platform is a Unmanned Ground Vehicle (UGV) and is a part of the SLaRC project at Mälardalen University. 
 
 ### 2.1 Bill of Materials
-All components and spare parts are listed in the file [DOC-001-Bill_Of_Materials](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Files/DOC-001-Bill_Of_Materials.xlsx)
+All components and spare parts are listed in the Excel file that can be downloaded here [DOC-001-Bill_Of_Materials.xlsx](https://github.com/MDU-C2/SLaRC-LightSeeker-HT25/blob/main/docs/DOC-Files/DOC-001-Bill_Of_Materials.xlsx).
 
 ### 2.2 Mechanical Design
 <!-- e.g. solidwork, images of platform/sensors-->
