@@ -318,7 +318,7 @@ CAN frame -> Buffer -> Full packet -> update_from_frame() -> Battery-object
 The CAN communication, as well as the implemented functionality, was done in C++ and the source code can be found under the motor and battery branches respectively.
 The motors and batteries requires a CAN interface each (USB-CAN / ODrive adapter) to support two separate CAN busses. This guide explains how multiple CAN adapters can be used simultaneously, [Multiple CAN adapters Guide](https://klipper.discourse.group/t/multiple-can-adapters-under-systemd/24552)". To ensure correct communication, each ODrive adapter must be connected to a socket using unique hardware identifier such as ID_Serial.  
 
-(KANSKE SKA BORT?)
+<!--(KANSKE SKA BORT?)-->
 Cube Mars provided motor cables and CAN cables intertwined in one singular short cable. To lengthen them similar cables was soldered on both the motor cables and CAN cables respectively. Custom-made CAN cables was assembled by combining a [JST-GH Head](https://se.rs-online.com/web/p/wire-housings-plugs/7521731), a [JST-GH Crimp](https://se.rs-online.com/web/p/crimp-contacts/7521725), and 28 AWG cables.
 
 To run the program, following commands needs to be ran:
