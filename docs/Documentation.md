@@ -45,7 +45,7 @@ Name of files shuld follow this base: DOC-xxx-Name_Of_File
 
 # Documentation for the platform in SLaRC
 **Version:** 1.0
-**Release Date:** 2026-00-00
+**Release Date:** 2026-01-18
 <br> Mälardalen University 
 
 <!-- Table for abbreviations?-->
@@ -55,21 +55,21 @@ Name of files shuld follow this base: DOC-xxx-Name_Of_File
 1. [System Overview](#2-system-overview)
     1. [Bill of Materials](#21-bill-of-materials)
     1. [Mechanical Design](#22-mechanical-design)
-        1. [Wheels](#221-wheels)
+        <!--1. [Wheels](#221-wheels)
         1. [Suspension](#22-mechanical-design)
         1. [Chassis](#223-chassis)
-        1. [Sensor Placement](#224-sensor-placement)
+        1. [Sensor Placement](#224-sensor-placement)-->
 1. [Platform Features]()
     1. [Battery Charging](#31-battery-charging)
     1. [Main Switch](#32-main-switch)
     1. [Emergency Stop](#33-emergency-stop)
-    1. [Add or Remove Components to the PDB](#34-add-or-remove-components-to-the-pdb)
+   <!--> 1. [Add or Remove Components to the PDB](#34-add-or-remove-components-to-the-pdb)
 1. [Hardware Setup]()
     1. [Power System](#43-power-system)
         1. [Battery](#431-battery)
         1. [Main Switch](#432-main-switch)
         1. [Emergency Stop Button](#433-emergency-stop-button)
-        1. [Shunt Regulator](#434-shunt-regulator)
+       <!--> 1. [Shunt Regulator](#434-shunt-regulator)-->
         1. [Conductor](#435-conductor)
         1. [High-Voltage PDB](#436-high-voltage-pdb)
         1. [Low-Voltage PDB](#437-low-voltage-pdb)
@@ -80,7 +80,7 @@ Name of files shuld follow this base: DOC-xxx-Name_Of_File
 1. [Software Installation](#5-software-installation)
 1. [Platform Start-Up & Operation](#6-platform-start-up-and-operation)
 1. [Troubleshooting](#7-troubleshooting)
-1. [Support & Contact](#8-support--contact)
+<!--1. [Support & Contact](#8-support--contact)-->
 ---
 
 ## 1. Introduction 
@@ -98,7 +98,7 @@ All components and spare parts are listed in the Excel file that can be download
 ### 2.2 Mechanical Design
 <!-- e.g. solidwork, images of platform/sensors-->
 The overall mechanical design of the UGV is divided into four main sections. The following paragraphs provide detailed information on each section, outlining its functionality and purpose.
-
+<!-- 
 #### 2.2.1 Wheels
 
 #### 2.2.2 Suspension 
@@ -106,7 +106,7 @@ The overall mechanical design of the UGV is divided into four main sections. The
 #### 2.2.3 Chassis
 
 #### 2.2.4 Sensor Placement
-
+-->
 ## 3 Platform Features
 <!-- e.g. reqirements or functions that the device can perform -->
 ### 3.1 Battery Charging
@@ -140,8 +140,8 @@ LowVoltage: It is equipped with three different dc-dc converters. One providing 
 
 HighVoltage: The motors have one individual connector for each motor. Each connector tolerates 40V and 30A. Apart from motor connectors, it has an additional connector that can provide a unit with 48V and a maximum of 20A. 
 
-
-### 3.5 Change Output Voltage on PDB
+<!---
+### 3.5 Change Output Voltage on PDB-->
 
 ## 4. Hardware Setup
 <!-- e.g. step by step how to set up something-->
@@ -187,7 +187,7 @@ The UGV:S main switch is located at the back of the platform. Its main purpose i
 #### 4.3.3 Emergency Stop Button
 The emergency stop button controlls the conductor. It is normaly closed and thereby brakes the circuit only when the button is pressed. When the button is relised the circuit closes again.
 
-#### 4.3.4 Shunt Regulator
+<!--#### 4.3.4 Shunt Regulator-->
 
 #### 4.3.5 Conductor
 The conductor works as a relay and controls the power provided to the motors. The emergency stop button is connected to the conductor's control signal. 
@@ -326,7 +326,7 @@ source install/setup.bash -> Makes ROS nodes and messages available in the shell
 colcon build -> Compiles all ROS2 packages
 ros2 run s_robot motor_controller -> Runs the program
 
-### 4.5 Sensors
+<!--### 4.5 Sensors
 
 
 ### 4.6 Computer
@@ -335,7 +335,7 @@ ros2 run s_robot motor_controller -> Runs the program
 ### 4.7 Router
 
 
-### 4.8 RTK
+### 4.8 RTK-->
 ## 5. Software Installation
 <!-- e.g. step by step how to install or do something -->
 ### 5.1 CubeMars Upper Computer V3.0
@@ -371,5 +371,5 @@ Make sure the emergency stop botton is not pressed. If not pressed, check if any
 
 Check the corresponding fuse.
 
-## 8. Support & Contact
+<!--## 8. Support & Contact-->
 <!-- e.g. a list of all students in the SLaRC team and what role they had/what knowledge they possessed about-->
