@@ -1,0 +1,88 @@
+import can, time, subprocess
+
+BITRATE = 1_000_000
+MOTOR_ID = 0x02    #specific motor ID set in CubeMarsTool software
+
+# CAN IDs (Extended)
+ID_SET_CURRENT = (1 << 8) | MOTOR_ID    # torque
+ID_SET_RPM     = (3 << 8) | MOTOR_ID    # velocity
+
+# Helpers
+def sh(cmd):
+    subprocess.call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+def bring_up_can():
+    sh(["sudo","ip","link","set","can0","down"])
+    sh(["sudo","ip","link","set","can0","type","can","bitrate",str(BITRATE)])
+    sh(["sudo","ip","link","set","can0","up"])
+    time.sleep(0.1)
+
+def pack_int32(val):
+    val = int(val)
+    return bytes([
+        (val >> 24) & 0xFF,
+        (val >> 16) & 0xFF,
+        (val >> 8) & 0xFF,
+        val & 0xFF
+    ])
+
+# Main
+def main():
+    bring_up_can()
+    print(" CAN ready)
+
+    bus = can.interface.Bus(channel="can0", bustype="socketcan")
+
+    # Torque Limit
+    # 1.0 A = safe for testing
+    current_limit = 1.0
+    current_raw = int(current_limit * 1000)     # datasheet: A * 1000
+    
+    msg_current = can.Message(
+        arbitration_id=ID_SET_CURRENT,
+        is_extended_id=True,
+        data=pack_int32(current_raw)
+    )
+
+    bus.send(msg_current)
+    print(f"Torque limit set → {current_limit}A")
+
+    # Set Velocity
+    target_rpm = 15000       # slow rotation
+    rpm_raw = int(target_rpm)
+
+    msg_rpm = can.Message(
+        arbitration_id=ID_SET_RPM,
+        is_extended_id=True,
+        data=pack_int32(rpm_raw)
+    )
+
+    print(f"Spinning at {target_rpm} RPM")
+    for i in range(10):
+        bus.send(msg_rpm)
+        time.sleep(0.03)
+
+    print("Motor running. CTRL+C to stop.")
+
+    # Keep motor alive periodically
+    while True:
+        bus.send(msg_rpm)
+        time.sleep(0.1)
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n Stopping motor...")
+
+        # Send 0 rpm
+        stop_msg = can.Message(
+            arbitration_id=ID_SET_RPM,
+            is_extended_id=True,
+            data=pack_int32(0)
+        )
+        bus = can.interface.Bus(channel="can0", bustype="socketcan")
+        for _ in range(5):
+            bus.send(stop_msg)
+            time.sleep(0.02)
+        print("Motor stopped.")
